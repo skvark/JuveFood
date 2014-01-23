@@ -1,0 +1,5 @@
+#include "getfooddata.h"
+
+FoodData::FoodData()
+{
+}

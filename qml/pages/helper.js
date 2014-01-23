@@ -1,0 +1,1 @@
+var selected = new Array;
