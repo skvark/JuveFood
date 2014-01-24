@@ -5,7 +5,7 @@ Sailfish application. Fetches menus from any Juvenes restaurant.
 
 You can get the .rpm from here: [http://relativity.fi/JuveFood/](http://relativity.fi/JuveFood/)
 
-Icon by fercen.
+Icon by [fercen](https://github.com/fercen).
 
 Notes
 =====
