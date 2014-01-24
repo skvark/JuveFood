@@ -16,6 +16,8 @@ This is alpha version, so there's some missing features.
 - Restaurants may be in different order after every update because the data is pushed to UI asynchronously
 - only current day's foods are shown
 - language option translates only foods, nothing else (if there are both translations at Juvenes API)
+- loader icon is missing if network connection is slow
+- Settings UI is not so great
 
 Screenshots
 ===========
