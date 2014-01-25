@@ -4,6 +4,12 @@ import Sailfish.Silica 1.0
 Page {
     id: page
 
+    BusyIndicator {
+        anchors.centerIn: parent
+        size: BusyIndicatorSize.Large
+        running: load
+    }
+
     SilicaFlickable {
         anchors.fill: parent
 
@@ -49,7 +55,7 @@ Page {
             spacing: Theme.paddingSmall
 
             PageHeader {
-                title: Qt.formatDateTime(new Date(), "d.M") + "   Menus"
+                title: Qt.formatDateTime(new Date(), "d.M") + ". Menus"
             }
 
             SilicaListView {
@@ -58,7 +64,7 @@ Page {
                 model: foodModel
 
                 ViewPlaceholder {
-                    enabled: listview.count == 0
+                    enabled: listview.count == 0 && !load
                     text: "No restaurants added yet. You can add them in settings."
                 }
 
@@ -85,15 +91,23 @@ Page {
         id: foodModel
     }
 
+    property bool load: true;
+
     Connections {
         target: foodAPI
+        onLoading: {
+            load = loading;
+        }
         onDataReady: {
             var colorizer = false;
-            if (foods.length === 1) {
-
-            }
             for(var i = 0; i < foods.length; ++i) {
+
                 if (i === 0) {
+                    foodModel.append({"name": foodAPI.foods[i],
+                                      "size": 28,
+                                      "margin": 10,
+                                      "colorize": false});
+                } else if (!foodAPI.foods[i-1].length > 0) {
                     foodModel.append({"name": foodAPI.foods[i],
                                       "size": 28,
                                       "margin": 10,

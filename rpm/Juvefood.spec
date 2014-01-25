@@ -28,7 +28,7 @@ BuildRequires:  pkgconfig(sailfishapp) >= 0.0.10
 BuildRequires:  desktop-file-utils
 
 %description
-Short description of my SailfishOS Application
+
 
 
 %prep
@@ -63,6 +63,10 @@ desktop-file-install --delete-original       \
 
 %files
 %defattr(-,root,root,-)
+%{_bindir}
+%{_datadir}/%{name}/qml
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/icons/hicolor/86x86/apps/%{name}.png
 /usr/bin
 /usr/share/JuveFood
 /usr/share/applications
