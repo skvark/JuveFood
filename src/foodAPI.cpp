@@ -18,6 +18,7 @@ void foodAPI::update() {
 void foodAPI::getFoodBySettings()
 {
     loading_ = true;
+    tempFoods_.clear();
     food_.clear();
     QString lang;
     QList<QString> settings = loadSettings();
