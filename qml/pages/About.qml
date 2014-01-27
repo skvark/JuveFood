@@ -19,10 +19,13 @@ Page {
 
             Label {
                 width: parent.width
+                height: 800
                 wrapMode: Text.Wrap
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.primaryColor
-                text: "Created by skvark. JuveFood icon by fercen.\n\n" +
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: "Created by Olli-Pekka Heinisuo. JuveFood icon and cover by Janne Peltonen.\n\n" +
                       "This software is released under MIT license.\n\n" +
                       "You can get the code and contribute at:\n" +
                       "http://github.com/skvark/JuveFood"

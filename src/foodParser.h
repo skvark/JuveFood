@@ -12,6 +12,7 @@
 #include <helperFunctions.h>
 #include <QVector>
 #include <QTextCodec>
+#include <QNetworkReply>
 
 class foodParser : public QObject
 {
@@ -31,6 +32,7 @@ signals:
 public slots:
     void parseInitData(const QByteArray &data);
     void parseFoodData(const QByteArray &data);
+    void error(const QNetworkReply::NetworkError &error);
 
 private:
     HTTPEngine *httpEngine_;

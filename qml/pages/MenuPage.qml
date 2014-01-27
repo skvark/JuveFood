@@ -26,15 +26,10 @@ Page {
 
                 text: "Settings"
                 onClicked: {
-                    var dialog = pageStack.push("Settings.qml")
+                    var dialog = pageStack.push("Settings.qml");
                     dialog.accepted.connect(function() {
                                 foodModel.clear();
-                            }
-                    )
-                    dialog.rejected.connect(function() {
-                                foodModel.clear();
-                            }
-                    )
+                            })
                 }
             }
             MenuItem {
@@ -55,12 +50,12 @@ Page {
             spacing: Theme.paddingSmall
 
             PageHeader {
-                title: Qt.formatDateTime(new Date(), "d.M") + ". Menus"
+                title: { Qt.formatDateTime(new Date(), "d.M") + ". Menus" }
             }
 
             SilicaListView {
                 id: listview
-                width: 480; height: 800
+                width: 540; height: 800
                 model: foodModel
 
                 ViewPlaceholder {
@@ -74,15 +69,17 @@ Page {
                     anchors.left: parent.left
                     anchors.leftMargin: margin
 
-
                     Label {
-                        width: 480
+
+                        width: 520
                         wrapMode: Text.WordWrap
                         font.pixelSize: size
                         text: name
                         color: colorize ? Theme.highlightColor : Theme.primaryColor
+
                     }
                 }
+                VerticalScrollDecorator { flickable: listview }
             }
         }
     }
@@ -99,30 +96,36 @@ Page {
             load = loading;
         }
         onDataReady: {
-            var colorizer = false;
-            for(var i = 0; i < foods.length; ++i) {
 
-                if (i === 0) {
-                    foodModel.append({"name": foodAPI.foods[i],
-                                      "size": 28,
-                                      "margin": 10,
-                                      "colorize": false});
-                } else if (!foodAPI.foods[i-1].length > 0) {
-                    foodModel.append({"name": foodAPI.foods[i],
-                                      "size": 28,
-                                      "margin": 10,
-                                      "colorize": false});
-                } else {
-                    foodModel.append({"name": foodAPI.foods[i],
-                                      "size": 26,
-                                      "margin": 20,
-                                      "colorize": colorizer});
-                    if (colorizer) {
-                        colorizer = false;
+            if (foods.length > 0) {
+                for(var i = 0; i < foods.length; ++i) {
+
+                    if (i === 0) {
+                        foodModel.append({"name": foodAPI.foods[i],
+                                          "size": 28,
+                                          "margin": 10,
+                                          "colorize": true,
+                                         });
+                    } else if (!foodAPI.foods[i-1].length > 0) {
+                        foodModel.append({"name": foodAPI.foods[i],
+                                          "size": 28,
+                                          "margin": 10,
+                                          "colorize": true,
+                                         });
                     } else {
-                        colorizer = true;
+                        foodModel.append({"name": foodAPI.foods[i],
+                                          "size": 26,
+                                          "margin": 20,
+                                          "colorize": false,
+                                         });
                     }
                 }
+            } else {
+                foodModel.append({"name": "There wasn't any menus available for this day.",
+                                  "size": 40,
+                                  "margin": 10,
+                                  "colorize": false,
+                                 });
             }
         }
     }

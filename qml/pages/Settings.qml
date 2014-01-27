@@ -2,12 +2,11 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "helper.js" as Helper
 
-
 Dialog {
 
     id: page
-    Component.onCompleted: getSettings()
-    onDone: { save(); }
+    onAccepted: { save(); }
+    Component.onCompleted: { getSettings() }
 
     SilicaFlickable {
         anchors.fill: parent
@@ -27,14 +26,20 @@ Dialog {
         ComboBox {
             id: combo
             parent: content
-            width: 480
+            width: 540
             label: "Language"
             currentIndex: language
 
             menu: ContextMenu {
                 id: combocontent
-                MenuItem { text: "Finnish" }
-                MenuItem { text: "English" }
+                MenuItem {
+                    text: "Finnish"
+                    height: 60
+                }
+                MenuItem {
+                    text: "English"
+                    height: 60
+                }
             }
         }
 
@@ -43,23 +48,23 @@ Dialog {
         SilicaListView {
             parent: page
             id: listView
-            y: 350
-            width: page.width; height: 600
+            y: 390
+            width: page.width; height: 500
             model: restaurantModel
 
             delegate: BackgroundItem {
                 id: delegate
                 down: check
                 Label {
-                    id: labelTest
-                    x: Theme.paddingSmall
+                    id: kitchenlabel
+                    anchors.verticalCenter: parent.verticalCenter
                     y: Theme.paddingSmall
                     font.pixelSize: 26
                     wrapMode: Text.WordWrap
                     text: name
                     color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
                 }
-                onClicked: select(labelTest.text, index)
+                onClicked: select(kitchenlabel.text, index)
 
                 function select(name, index) {
                     if (Helper.selected.indexOf(name) !== -1) {
@@ -72,7 +77,7 @@ Dialog {
                 }
 
             }
-            HorizontalScrollDecorator { flickable: listView }
+            VerticalScrollDecorator { flickable: listView }
         }
     }
 

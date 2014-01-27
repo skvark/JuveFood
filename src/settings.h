@@ -9,7 +9,7 @@ class SettingsManager
 {
 public:
     SettingsManager();
-    void saveSettings(QList<QString> settings);
+    bool saveSettings(QList<QString> settings);
     QList<QString> loadSettings();
 
 private:

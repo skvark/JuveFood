@@ -6,7 +6,7 @@ SettingsManager::SettingsManager()
     settings_->setIniCodec("UTF-8");
 }
 
-void SettingsManager::saveSettings(QList<QString> data)
+bool SettingsManager::saveSettings(QList<QString> data)
 {
     settings_->remove(QString("settings"));
     settings_->beginWriteArray(QString("settings"), data.size());
@@ -15,12 +15,13 @@ void SettingsManager::saveSettings(QList<QString> data)
         settings_->setValue("kitchen_" + QString::number(i), data[i]);
     }
     settings_->endArray();
+    return true;
 }
 
 QList<QString> SettingsManager::loadSettings()
 {
+    settings_->sync();
     QList<QString> kitchens;
-
     settings_->beginGroup("settings");
     const QStringList childKeys = settings_->childKeys();
 

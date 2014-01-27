@@ -47,7 +47,7 @@ void HTTPEngine::parseGetRequest(QNetworkReply *finished)
 {
     if ( finished->error() != QNetworkReply::NoError )
     {
-        return;
+        emit networkError(finished->error());
     }
     QByteArray data = finished->readAll();
     emit foodDataReady(data);

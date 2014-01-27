@@ -12,6 +12,9 @@ foodParser::foodParser(QObject *parent):
     QObject::connect(httpEngine_, SIGNAL(foodDataReady(const QByteArray&)),
                      this, SLOT(parseFoodData(const QByteArray&)));
 
+    QObject::connect(httpEngine_, SIGNAL(networkError(const QNetworkReply::NetworkError&)),
+                     this, SLOT(error(const QNetworkReply::NetworkError&)));
+
     parseKitchens();
 }
 
@@ -98,11 +101,16 @@ void foodParser::parseFoodData(const QByteArray &data)
     QByteArray data2 = data;
     cleanJSON(data2);
     QJsonParseError err;
+    QList<QString> foods;
 
     QJsonDocument doc = QJsonDocument::fromJson(data2, &err);
+
+    if(doc.isEmpty()) {
+        emit foodReady(foods);
+    }
+
     QJsonObject restaurant = doc.object();
     QJsonArray mealoptions = restaurant["MealOptions"].toArray();
-    QList<QString> foods;
 
     foods.append(restaurant["KitchenName"].toString() +
                  QString(" - ") +
@@ -120,13 +128,28 @@ void foodParser::parseFoodData(const QByteArray &data)
             if(counter > 0) {
                 food += ", " + obj["Name"].toString();
             } else {
-                food += obj["Name"].toString();
+                food += QString("\u2022 ") + obj["Name"].toString();
             }
             ++counter;
         }
-        foods.append(food);
+        if (food.length() > 0) {
+            foods.append(food);
+        }
     }
-    foods.append(QString(""));
-    emit foodReady(foods);
+    if (foods.length() > 2) {
+        foods.append(QString(""));
+        emit foodReady(foods);
+    } else {
+        QList<QString> empty;
+        emit foodReady(empty);
+    }
 }
+
+void foodParser::error(const QNetworkReply::NetworkError &error)
+{
+    QList<QString> empty;
+    emit foodReady(empty);
+}
+
+
 

@@ -11,7 +11,6 @@ foodAPI::foodAPI(QObject *parent):
 }
 
 void foodAPI::update() {
-    food_.clear();
     getFoodBySettings();
 }
 
@@ -55,7 +54,11 @@ void foodAPI::kitchensReady()
 void foodAPI::populateFoodList(const QList<QString> &foods)
 {
     // QMap orders stuff by key
-    tempFoods_.insert(foods[0], foods);
+    if (foods.empty()) {
+
+    } else {
+        tempFoods_.insert(foods[0], foods);
+    }
     // Async reply counter
     --parsedAndReady_;
     // if everything parsed, we are ready to push data to UI
@@ -90,8 +93,9 @@ QList<QString> foodAPI::getKitchenNameList()
 
 void foodAPI::saveSettings(QList<QString> settings)
 {
-    settingsManager_->saveSettings(settings);
-    getFoodBySettings();
+    if(settingsManager_->saveSettings(settings)) {
+        getFoodBySettings();
+    }
 }
 
 QList<QString> foodAPI::loadSettings()
