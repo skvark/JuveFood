@@ -8,9 +8,12 @@
 #include <QQmlContext>
 #include <QQuickView>
 #include <QGuiApplication>
+#include <QCoreApplication>
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setApplicationName("harbour-juvefood");
+    QCoreApplication::setOrganizationName("skvark");
     foodAPI api;
     QGuiApplication *app = SailfishApp::application(argc, argv);
     QQuickView *view = SailfishApp::createView();

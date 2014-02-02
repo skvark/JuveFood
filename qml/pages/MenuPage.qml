@@ -37,6 +37,7 @@ Page {
                 onClicked: {
                     foodModel.clear();
                     foodAPI.update();
+                    date: Qt.formatDateTime(new Date(), "d.M")
                 }
             }
         }
@@ -50,7 +51,7 @@ Page {
             spacing: Theme.paddingSmall
 
             PageHeader {
-                title: { Qt.formatDateTime(new Date(), "d.M") + ". Menus" }
+                title: { date + ". Menus" }
             }
 
             SilicaListView {
@@ -88,7 +89,8 @@ Page {
         id: foodModel
     }
 
-    property bool load: true;
+    property string date: Qt.formatDateTime(new Date(), "d.M");
+    property bool load: false;
 
     Connections {
         target: foodAPI

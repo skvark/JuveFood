@@ -10,6 +10,14 @@ foodAPI::foodAPI(QObject *parent):
     QObject::connect(parser_, SIGNAL(foodReady(const QList<QString>)), this, SLOT(populateFoodList(const QList<QString>)));
 }
 
+foodAPI::~foodAPI()
+{
+    delete parser_;
+    delete settingsManager_;
+    parser_ = 0;
+    settingsManager_ = 0;
+}
+
 void foodAPI::update() {
     getFoodBySettings();
 }
@@ -23,7 +31,7 @@ void foodAPI::getFoodBySettings()
     QList<QString> settings = loadSettings();
     int size = settings.length();
 
-    if (size == 1) {
+    if (size < 2) {
         loading_ = false;
     }
 

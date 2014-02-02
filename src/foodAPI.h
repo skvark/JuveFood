@@ -17,6 +17,7 @@ class foodAPI : public QObject
     Q_PROPERTY(bool loading READ loadingStatus NOTIFY loading)
 public:
     foodAPI(QObject *parent = 0);
+    ~foodAPI();
 
     void getFoodBySettings();
     QList<QString> getFoods();

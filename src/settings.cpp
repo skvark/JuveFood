@@ -2,35 +2,35 @@
 
 SettingsManager::SettingsManager()
 {
-    settings_ = new QSettings("JuveFood", "juvefood.api");
+    QString data_dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    QSettings::setPath(QSettings::NativeFormat, QSettings::UserScope, data_dir);
+    settings_ = new QSettings;
     settings_->setIniCodec("UTF-8");
+}
+
+SettingsManager::~SettingsManager()
+{
+    delete settings_;
+    settings_ = 0;
 }
 
 bool SettingsManager::saveSettings(QList<QString> data)
 {
-    settings_->remove(QString("settings"));
-    settings_->beginWriteArray(QString("settings"), data.size());
-    int size = data.length();
-    for (int i=0; i < size; ++i) {
-        settings_->setValue("kitchen_" + QString::number(i), data[i]);
+    QVariantList datalist;
+    foreach(QString setting, data){
+        datalist << setting;
     }
-    settings_->endArray();
+    settings_->setValue("settings", datalist);
+    settings_->sync();
     return true;
 }
 
 QList<QString> SettingsManager::loadSettings()
 {
-    settings_->sync();
+    QVariantList data = settings_->value("settings").toList();
     QList<QString> kitchens;
-    settings_->beginGroup("settings");
-    const QStringList childKeys = settings_->childKeys();
-
-    foreach(const QString &childKey, childKeys)
-    {
-        if(childKey != "size") {
-            kitchens.append(settings_->value(childKey).toString());
-        }
+    foreach(QVariant v, data){
+        kitchens.append(v.toString());
     }
-    settings_->endGroup();
     return kitchens;
 }

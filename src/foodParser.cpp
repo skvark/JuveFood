@@ -18,6 +18,12 @@ foodParser::foodParser(QObject *parent):
     parseKitchens();
 }
 
+foodParser::~foodParser()
+{
+    delete httpEngine_;
+    httpEngine_ = 0;
+}
+
 void foodParser::parseKitchens()
 {
     httpEngine_->getKitchens();

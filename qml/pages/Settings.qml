@@ -86,7 +86,7 @@ Dialog {
     }
 
     function save() {
-        Helper.selected.push(combo.value)
+        Helper.selected.push(combo.value);
         foodAPI.saveSettings(Helper.selected);
     }
 

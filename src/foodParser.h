@@ -19,6 +19,7 @@ class foodParser : public QObject
     Q_OBJECT
 public:
     foodParser(QObject *parent = 0);
+    ~foodParser();
 
     Kitchen *getKitchenByName(QString kitchenName);
     void parseKitchens();
