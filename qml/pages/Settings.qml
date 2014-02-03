@@ -96,12 +96,14 @@ Dialog {
 
         var restaurants = foodAPI.getKitchenNameList().sort();
         var settings = foodAPI.loadSettings();
+
         if (settings[settings.length-1] === "Finnish") {
             language = 0;
         } else if (settings[settings.length-1] === "English") {
             language = 1;
         }
-        combo.update()
+        combo._updateCurrent(language, settings[settings.length-1])
+
         for(var i = 0; i < restaurants.length; ++i) {
 
             if (i !== restaurants.length - 1) {
