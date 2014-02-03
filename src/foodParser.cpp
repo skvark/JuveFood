@@ -22,6 +22,10 @@ foodParser::~foodParser()
 {
     delete httpEngine_;
     httpEngine_ = 0;
+    foreach(Kitchen* kitchen, kitchens_) {
+        delete kitchen;
+        kitchen = 0;
+    }
 }
 
 void foodParser::parseKitchens()
