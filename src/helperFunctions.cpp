@@ -18,7 +18,7 @@ void cleanJSON(QByteArray &dirty) {
    const char* replace = "";
    dirty.replace(remove, replace);
 
-   remove = "\\";
-   replace = "";
+   remove = "\\\"";
+   replace = "\"";
    dirty.replace(remove, replace);
 }
