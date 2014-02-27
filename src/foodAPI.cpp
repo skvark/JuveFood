@@ -6,8 +6,11 @@ foodAPI::foodAPI(QObject *parent):
     parser_ = new foodParser();
     settingsManager_ = new SettingsManager();
     loading_ = true;
-    QObject::connect(parser_, SIGNAL(initData()), this, SLOT(kitchensReady()));
-    QObject::connect(parser_, SIGNAL(foodReady(const QList<QString>)), this, SLOT(populateFoodList(const QList<QString>)));
+    settingsLoading_ = true;
+    QObject::connect(parser_, SIGNAL(initData()),
+                     this, SLOT(kitchensReady()));
+    QObject::connect(parser_, SIGNAL(foodReady(const QList<QString>)),
+                     this, SLOT(populateFoodList(const QList<QString>)));
 }
 
 foodAPI::~foodAPI()
@@ -56,6 +59,8 @@ void foodAPI::getFoodBySettings()
 // so that the UI updates
 void foodAPI::kitchensReady()
 {
+    settingsLoading_ = false;
+    emit settingsLoading(settingsLoading_);
     getFoodBySettings();
 }
 
@@ -86,6 +91,11 @@ QList<QString> foodAPI::getFoods()
 bool foodAPI::loadingStatus()
 {
     return loading_;
+}
+
+bool foodAPI::settingsLoadingStatus()
+{
+    return settingsLoading_;
 }
 
 QList<QString> foodAPI::getUserKitchens()

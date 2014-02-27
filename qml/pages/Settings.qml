@@ -6,7 +6,16 @@ Dialog {
 
     id: page
     onAccepted: { save(); }
-    Component.onCompleted: { getSettings() }
+    Component.onCompleted: {
+        getSettings();
+        settingsLoad = foodAPI.settingsLoadingStatus();
+    }
+
+    BusyIndicator {
+        anchors.centerIn: parent
+        size: BusyIndicatorSize.Large
+        running: settingsLoad
+    }
 
     SilicaFlickable {
         anchors.fill: parent
@@ -18,30 +27,29 @@ Dialog {
             width: parent.width
             height: 200
 
-            PageHeader {
-                id: title
-                title: qsTr("Save       ")
+            DialogHeader {
+                acceptText: "Save"
             }
 
-        ComboBox {
-            id: combo
-            parent: content
-            width: 540
-            label: "Language"
-            currentIndex: language
+            ComboBox {
+                id: combo
+                parent: content
+                width: 540
+                label: "Language"
+                currentIndex: language
 
-            menu: ContextMenu {
-                id: combocontent
-                MenuItem {
-                    text: "Finnish"
-                    height: 60
-                }
-                MenuItem {
-                    text: "English"
-                    height: 60
+                menu: ContextMenu {
+                    id: combocontent
+                    MenuItem {
+                        text: "Finnish"
+                        height: 60
+                    }
+                    MenuItem {
+                        text: "English"
+                        height: 60
+                    }
                 }
             }
-        }
 
         }
 
@@ -91,6 +99,15 @@ Dialog {
     }
 
     property int language: 0;
+    property bool settingsLoad: true;
+
+    Connections {
+        target: foodAPI
+        onSettingsLoading: {
+            console.log('lotinaa' + settingsLoading)
+            settingsLoad = settingsLoading;
+        }
+    }
 
     function getSettings() {
 

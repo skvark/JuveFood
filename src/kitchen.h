@@ -13,10 +13,14 @@ public:
             unsigned int kitchenInfoId,
             unsigned int openInfoId,
             unsigned int menuTypeId,
-            QString name);
+            QString name,
+            QString shortName);
 
     QString getKitchenName();
     QList<QPair<QString, QString> > getByWeekdayQuery(QString lang);
+    QList<QString> getTodaysFoods();
+    QString getShortName();
+    void addTodaysFoods(QList<QString> food);
 
 private:
 
@@ -30,6 +34,10 @@ private:
     unsigned int menuTypeId_;
     // kitchen name
     QString name_;
+    // Shorter name
+    QString shortName_;
+    // current foods, contains only main food names
+    QList<QString> todaysFood_;
 
 };
 

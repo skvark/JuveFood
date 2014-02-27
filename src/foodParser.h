@@ -13,6 +13,7 @@
 #include <QVector>
 #include <QTextCodec>
 #include <QNetworkReply>
+#include <QDebug>
 
 class foodParser : public QObject
 {

@@ -6,6 +6,7 @@
 #include <foodParser.h>
 #include <settings.h>
 #include <QMap>
+#include <QDebug>
 
 /* Interface for UI.
 */
@@ -15,23 +16,28 @@ class foodAPI : public QObject
     Q_OBJECT
     Q_PROPERTY(QList<QString> foods READ getFoods NOTIFY dataReady)
     Q_PROPERTY(bool loading READ loadingStatus NOTIFY loading)
+    Q_PROPERTY(bool settingsLoading READ settingsLoadingStatus NOTIFY settingsLoading)
+
 public:
     foodAPI(QObject *parent = 0);
     ~foodAPI();
 
-    void getFoodBySettings();
-    QList<QString> getFoods();
-    bool loadingStatus();
     Q_INVOKABLE QList<QString> getUserKitchens();
     Q_INVOKABLE QList<QString> getKitchenNameList();
     Q_INVOKABLE void saveSettings(QList<QString> settings);
+    Q_INVOKABLE bool settingsLoadingStatus();
     Q_INVOKABLE QList<QString> loadSettings();
+
+    void getFoodBySettings();
     void orderFoodsByKitchenName();
+    bool loadingStatus();
+    QList<QString> getFoods();
 
 signals:
-    // This signal is sent always when food data is fetched
+    // This signal is sent always when food data is fetched and ready
     void dataReady(QList<QString> foods);
     void loading(bool loading);
+    void settingsLoading(bool loading);
 
 public slots:
     void populateFoodList(const QList<QString> &foods);
@@ -45,6 +51,7 @@ private:
     SettingsManager* settingsManager_;
     // helper variable to know when parsing is finished
     bool loading_;
+    bool settingsLoading_;
     int parsedAndReady_;
 };
 

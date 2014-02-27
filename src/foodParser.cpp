@@ -90,12 +90,15 @@ void foodParser::parseInitData(const QByteArray &data)
             QString name = kitchenInfo[QString("KitchenName")].toString().toUtf8() +
                    QString(" - ") +
                    kitchenInfo[QString("Name")].toString().toUtf8();
+            QString shortName = name;
+            shortName = shortName.replace(QString("Ravintola "), QString("")).replace(QString("- Lounas"), QString(""));
 
             kitchen = new Kitchen(kitchenInfo[QString("KitchenId")].toDouble(),
                                   kitchenInfo[QString("KitchenInfoId")].toDouble(),
                                   kitchenInfo[QString("OpenInfoId")].toDouble(),
                                   kitchenInfo[QString("MenuTypeId")].toDouble(),
-                                  name);
+                                  name,
+                                  shortName);
             kitchens_.push_back(kitchen);
             name.clear();
         }
@@ -112,6 +115,7 @@ void foodParser::parseFoodData(const QByteArray &data)
     cleanJSON(data2);
     QJsonParseError err;
     QList<QString> foods;
+    QList<QString> mainFoodNames;
 
     QJsonDocument doc = QJsonDocument::fromJson(data2, &err);
 
@@ -122,15 +126,27 @@ void foodParser::parseFoodData(const QByteArray &data)
     QJsonObject restaurant = doc.object();
     QJsonArray mealoptions = restaurant["MealOptions"].toArray();
 
-    foods.append(restaurant["KitchenName"].toString() +
-                 QString(" - ") +
-                 restaurant["MenuTypeName"].toString());
+    QString name = restaurant["KitchenName"].toString() + QString(" - ") +
+                   restaurant["MenuTypeName"].toString();
+
+    QString shortName = name;
+    shortName = shortName.replace(QString("Ravintola "), QString("")).replace(QString("- Lounas"), QString(""));
+    foods.append(shortName);
 
     foreach (const QJsonValue &value, mealoptions) {
 
-        QJsonObject obj = value.toObject();
-        QJsonArray arr = obj["MenuItems"].toArray();
         QString food = "";
+        QJsonObject obj = value.toObject();
+
+        // check for force majoure condition
+        if (obj["ForceMajeure"].toString() != "") {
+            food += QString("\u2022 ") + obj["ForceMajeure"].toString();
+            foods.append(food);
+            mainFoodNames.append(food);
+            continue;
+        }
+
+        QJsonArray arr = obj["MenuItems"].toArray();
         unsigned int counter = 0;
 
         foreach (const QJsonValue &value2, arr) {
@@ -139,6 +155,7 @@ void foodParser::parseFoodData(const QByteArray &data)
                 food += ", " + obj["Name"].toString();
             } else {
                 food += QString("\u2022 ") + obj["Name"].toString();
+                mainFoodNames.append(QString("\u2022 ") + obj["Name"].toString());
             }
             ++counter;
         }
@@ -146,6 +163,12 @@ void foodParser::parseFoodData(const QByteArray &data)
             foods.append(food);
         }
     }
+
+    // save main food names
+    if (getKitchenByName(name) != NULL) {
+        getKitchenByName(name)->addTodaysFoods(mainFoodNames);
+    }
+
     if (foods.length() > 2) {
         foods.append(QString(""));
         emit foodReady(foods);
