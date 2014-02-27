@@ -25,10 +25,14 @@ Page {
                 color: Theme.primaryColor
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
-                text: "Created by Olli-Pekka Heinisuo. JuveFood icon and cover by Janne Peltonen.\n\n" +
+                textFormat: Text.RichText;
+                onLinkActivated: Qt.openUrlExternally(link)
+                text: "<h1>JuveFood 0.1-2</h1><br /><br />" +
+                      "Created by Olli-Pekka Heinisuo. JuveFood icon and cover by Janne Peltonen.<br /><br />" +
                       "This software is released under MIT license.\n\n" +
                       "You can get the code and contribute at:\n" +
-                      "http://github.com/skvark/JuveFood"
+                      "<style>a:link { color: " + Theme.highlightColor + "; }</style>" +
+                      "<a href='http://github.com/skvark/JuveFood'>JuveFood - GitHub</a>";
             }
         }
     }
