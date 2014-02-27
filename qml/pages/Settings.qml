@@ -104,7 +104,6 @@ Dialog {
     Connections {
         target: foodAPI
         onSettingsLoading: {
-            console.log('lotinaa' + settingsLoading)
             settingsLoad = settingsLoading;
         }
     }
