@@ -21,4 +21,8 @@ void cleanJSON(QByteArray &dirty) {
    remove = "\\\"";
    replace = "\"";
    dirty.replace(remove, replace);
+
+   remove = "\\u003cbr\\\\/\\u003e";
+   replace = " ";
+   dirty.replace(remove, replace);
 }
