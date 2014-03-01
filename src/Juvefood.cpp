@@ -4,7 +4,6 @@
 
 #include <sailfishapp.h>
 #include <foodAPI.h>
-#include <stdio.h>
 #include <QQmlContext>
 #include <QQuickView>
 #include <QGuiApplication>
@@ -13,12 +12,12 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication::setApplicationName("harbour-juvefood");
-    QCoreApplication::setOrganizationName("skvark");
+    QCoreApplication::setOrganizationName("harbour-juvefood");
     foodAPI api;
     QGuiApplication *app = SailfishApp::application(argc, argv);
     QQuickView *view = SailfishApp::createView();
     view->rootContext()->setContextProperty("foodAPI", &api);
-    view->setSource(SailfishApp::pathTo("qml/Juvefood.qml"));
+    view->setSource(SailfishApp::pathTo("qml/harbour-juvefood.qml"));
     view->showFullScreen();
     app->exec();
 }
