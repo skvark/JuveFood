@@ -1,14 +1,17 @@
-Name: JuveFood
+Name: harbour-juvefood
 Summary: Juvenes food application.
 Version: 0.1
 Release: 1
 Group: Qt/Qt
 URL: http://example.org/
-License: LICENSE
+License: 'The MIT License (MIT)'
 Sources:
 - '%{name}-%{version}.tar.bz2'
-Description: |2+
+Description: |
+  JuveFood shows menus from any selected Juvenes restaurant.
 
+  - food names in Finnish or English (if translations are available)
+  - One or multiple restaurants can be selected
 Configure: none
 Builder: qtc5
 PkgConfigBR:
@@ -19,12 +22,8 @@ PkgConfigBR:
 Requires:
 - sailfishsilica-qt5 >= 0.10.9
 Files:
-- '%{_bindir}'
-- '%{_datadir}/%{name}/qml'
-- '%{_datadir}/applications/%{name}.desktop'
-- '%{_datadir}/icons/hicolor/86x86/apps/%{name}.png'
 - /usr/bin
-- /usr/share/JuveFood
+- /usr/share/harbour-juvefood
 - /usr/share/applications
 - /usr/share/icons/hicolor/86x86/apps
 PkgBR: []
