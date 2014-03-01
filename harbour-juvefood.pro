@@ -7,7 +7,7 @@
 #         - desktop filename must be changed
 #         - icon definition filename in desktop file must be changed
 
-TARGET = JuveFood
+TARGET = harbour-juvefood
 CONFIG += sailfishapp
 QT += network
 INCLUDEPATH += src/
@@ -20,15 +20,15 @@ SOURCES += src/Juvefood.cpp \
     src/httpEngine.cpp \
     src/settings.cpp
 
-OTHER_FILES += qml/Juvefood.qml \
+OTHER_FILES += \
     qml/cover/CoverPage.qml \
-    Juvefood.desktop \
+    harbour-juvefood.desktop \
     qml/pages/Settings.qml \
     qml/pages/MenuPage.qml \
     qml/pages/helper.js \
-    rpm/Juvefood.spec \
-    rpm/Juvefood.yaml \
-    qml/pages/About.qml
+    qml/pages/About.qml \
+    qml/harbour-juvefood.qml \
+    rpm/harbour-juvefood.yaml
 
 HEADERS += \
     src/kitchen.h \
