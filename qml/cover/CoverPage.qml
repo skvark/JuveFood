@@ -6,6 +6,11 @@ CoverBackground {
         id: image
         source: "../images/juvefood-appcover.png"
     }
+    Label {
+        id: label
+        anchors.centerIn: parent
+        text: "JuveFood"
+    }
 }
 
 

@@ -1,7 +1,7 @@
 Name: harbour-juvefood
 Summary: Juvenes food application.
 Version: 0.1
-Release: 1
+Release: 2
 Group: Qt/Qt
 URL: http://example.org/
 License: 'The MIT License (MIT)'
@@ -15,15 +15,15 @@ Description: |
 Configure: none
 Builder: qtc5
 PkgConfigBR:
-- sailfishapp >= 0.0.10
-- Qt5Core
-- Qt5Qml
 - Qt5Quick
+- Qt5Qml
+- Qt5Core
+- sailfishapp >= 0.0.10
 Requires:
 - sailfishsilica-qt5 >= 0.10.9
 Files:
-- /usr/share/icons/hicolor/86x86/apps
-- /usr/share/applications
-- /usr/share/harbour-juvefood
 - /usr/bin
+- /usr/share/harbour-juvefood
+- /usr/share/applications
+- /usr/share/icons/hicolor/86x86/apps
 PkgBR: []

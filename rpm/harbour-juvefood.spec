@@ -14,17 +14,17 @@ Name:       harbour-juvefood
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Juvenes food application.
 Version:    0.1
-Release:    1
+Release:    2
 Group:      Qt/Qt
 License:    The MIT License (MIT)
 URL:        http://example.org/
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-juvefood.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
-BuildRequires:  pkgconfig(sailfishapp) >= 0.0.10
-BuildRequires:  pkgconfig(Qt5Core)
-BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
+BuildRequires:  pkgconfig(Qt5Qml)
+BuildRequires:  pkgconfig(Qt5Core)
+BuildRequires:  pkgconfig(sailfishapp) >= 0.0.10
 
 %description
 JuveFood shows menus from any selected Juvenes restaurant.
@@ -61,9 +61,9 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-/usr/share/icons/hicolor/86x86/apps
-/usr/share/applications
-/usr/share/harbour-juvefood
 /usr/bin
+/usr/share/harbour-juvefood
+/usr/share/applications
+/usr/share/icons/hicolor/86x86/apps
 # >> files
 # << files
