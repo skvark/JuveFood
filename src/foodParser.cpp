@@ -90,8 +90,11 @@ void foodParser::parseInitData(const QByteArray &data)
             QString name = kitchenInfo[QString("KitchenName")].toString().toUtf8() +
                    QString(" - ") +
                    kitchenInfo[QString("Name")].toString().toUtf8();
-            QString shortName = name;
-            shortName = shortName.replace(QString("Ravintola "), QString("")).replace(QString("- Lounas"), QString(""));
+            QString shortName;
+
+            nameCompactor(name, shortName);
+
+
 
             kitchen = new Kitchen(kitchenInfo[QString("KitchenId")].toDouble(),
                                   kitchenInfo[QString("KitchenInfoId")].toDouble(),
@@ -129,8 +132,11 @@ void foodParser::parseFoodData(const QByteArray &data)
     QString name = restaurant["KitchenName"].toString() + QString(" - ") +
                    restaurant["MenuTypeName"].toString();
 
-    QString shortName = name;
-    shortName = shortName.replace(QString("Ravintola "), QString("")).replace(QString("- Lounas"), QString(""));
+    QString shortName;
+
+    nameCompactor(name, shortName);
+
+
     foods.append(shortName);
 
     foreach (const QJsonValue &value, mealoptions) {
@@ -178,7 +184,7 @@ void foodParser::parseFoodData(const QByteArray &data)
     }
 }
 
-void foodParser::error(const QNetworkReply::NetworkError &error)
+void foodParser::error(const QNetworkReply::NetworkError &)
 {
     QList<QString> empty;
     emit foodReady(empty);
