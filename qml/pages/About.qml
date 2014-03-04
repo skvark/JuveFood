@@ -15,7 +15,7 @@ Page {
             anchors.leftMargin: Theme.paddingLarge
             anchors.rightMargin: Theme.paddingLarge
 
-            PageHeader { title: qsTr("About JuveFood") }
+            PageHeader { title: qsTr("About") }
 
             Label {
                 width: parent.width
@@ -27,12 +27,17 @@ Page {
                 horizontalAlignment: Text.AlignHCenter
                 textFormat: Text.RichText;
                 onLinkActivated: Qt.openUrlExternally(link)
-                text: "<h1>JuveFood 0.1-2</h1><br /><br />" +
-                      "Created by Olli-Pekka Heinisuo. JuveFood icon and cover by Janne Peltonen.<br /><br />" +
-                      "This software is released under MIT license.\n\n" +
-                      "You can get the code and contribute at:\n" +
-                      "<style>a:link { color: " + Theme.highlightColor + "; }</style>" +
-                      "<a href='http://github.com/skvark/JuveFood'>JuveFood - GitHub</a>";
+                text: "<h1>JuveFood</h1>v0.2-2<br /><br />" +
+
+                      "<style> .legend { font-size: 20px;  } </style>" +
+
+                      "<span class=\"legend\">Created by</span><br />Olli-Pekka Heinisuo<br /><br />" +
+                      "<span class=\"legend\">Icon and cover image by</span><br />Janne Peltonen<br /><br /><br />" +
+
+                      "<font style=\"font-size: 23px;\">This software is released under MIT license.<br />" +
+                      "You can get the code and contribute at:</font>\n" +
+                      "<style>a:link { color: " + Theme.highlightColor + "; }</style><br />" +
+                      "<a href='http://github.com/skvark/JuveFood'>GitHub \\ JuveFood</a>";
             }
         }
     }
