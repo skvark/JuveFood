@@ -38,6 +38,10 @@ void nameCompactor(const QString& name, QString& shortName){
         // name is in an unknown format, do nothing.
         shortName = name;
         return;
+    } else if (end == -1) {
+        // not found
+        shortName = name;
+        return;
     }
     int begin = name.lastIndexOf(' ', end) + 1;
     if(name[begin].isLower()){
