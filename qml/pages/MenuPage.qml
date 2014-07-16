@@ -21,11 +21,11 @@ Page {
 
         anchors.fill: parent
         id: listview
-        model: foodModel
+        model: foodAPI.getModelByDate
 
         header: Component {
             PageHeader {
-                title: { date + ". Menus" }
+                title: { date + ". Menus" + foodAPI.getModelByDate }
             }
         }
 
@@ -43,15 +43,12 @@ Page {
                 text: "Settings"
                 onClicked: {
                     var dialog = pageStack.push("Settings.qml");
-                    dialog.accepted.connect(function() {
-                                foodModel.clear();
-                            })
                 }
             }
             MenuItem {
                 text: "Update"
                 onClicked: {
-                    timer.start()
+                    foodAPI.setModelByDate(new Date());
                 }
             }
         }
@@ -77,69 +74,15 @@ Page {
         }
         VerticalScrollDecorator { flickable: listview }
 
-        ViewPlaceholder {
-            enabled: listview.count == 0 && !load
-            text: "No restaurants added yet. You can add them in settings."
-        }
-
-        ViewPlaceholder {
-            enabled: listview.count == 1 && !load
-            text: "No menus available for any of your selected restaurants today."
-        }
-    }
-
-    ListModel {
-        id: foodModel
     }
 
     property string date: Qt.formatDateTime(new Date(), "d.M");
-    property bool load: true;
+    property bool load: false;
 
     function updateFoods() {
-        foodModel.clear();
-        foodAPI.update();
-        date = Qt.formatDateTime(new Date(), "d.M");
+        listview.model = foodAPI.getModelByDate
     }
 
-    Connections {
-        target: foodAPI
-        onLoading: {
-            load = loading;
-        }
-
-        onDataReady: {
-            if (foods.length > 0) {
-                for(var i = 0; i < foods.length; ++i) {
-
-                    if (i === 0) {
-                        foodModel.append({"name": foodAPI.foods[i],
-                                          "size": 28,
-                                          "margin": 10,
-                                          "colorize": true,
-                                         });
-                    } else if (!foodAPI.foods[i-1].length > 0) {
-                        foodModel.append({"name": foodAPI.foods[i],
-                                          "size": 28,
-                                          "margin": 10,
-                                          "colorize": true,
-                                         });
-                    } else {
-                        foodModel.append({"name": foodAPI.foods[i],
-                                          "size": 26,
-                                          "margin": 20,
-                                          "colorize": false,
-                                         });
-                    }
-                }
-            } else {
-                foodModel.append({"name": "",
-                                  "size": 40,
-                                  "margin": 10,
-                                  "colorize": false,
-                                 });
-            }
-        }
-    }
 }
 
 

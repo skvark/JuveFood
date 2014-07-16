@@ -5,12 +5,10 @@ foodAPI::foodAPI(QObject *parent):
 {
     parser_ = new foodParser();
     settingsManager_ = new SettingsManager();
-    loading_ = true;
     settingsLoading_ = true;
+    setModelByDate(QDate::currentDate());
     QObject::connect(parser_, SIGNAL(initData()),
                      this, SLOT(kitchensReady()));
-    QObject::connect(parser_, SIGNAL(foodReady(const QList<QString>)),
-                     this, SLOT(populateFoodList(const QList<QString>)));
 }
 
 foodAPI::~foodAPI()
@@ -27,16 +25,9 @@ void foodAPI::update() {
 
 void foodAPI::getFoodBySettings()
 {
-    loading_ = true;
-    tempFoods_.clear();
-    food_.clear();
     QString lang;
     QList<QString> settings = loadSettings();
     int size = settings.length();
-
-    if (size < 2) {
-        loading_ = false;
-    }
 
     if (size != 0) {
         if (settings[size - 1] != NULL) {
@@ -48,11 +39,9 @@ void foodAPI::getFoodBySettings()
             lang = QString("Finnish");
     }
 
-    parsedAndReady_ = size - 1;
     foreach(QString name, settings) {
-        parser_->parseKitchenFood(name, lang);
+        parser_->parseKitchenFood(name, lang, QDate::currentDate());
     }
-    emit loading(loading_);
 }
 
 // This slots is called automatically after the kitchens are initialized
@@ -64,33 +53,15 @@ void foodAPI::kitchensReady()
     getFoodBySettings();
 }
 
-void foodAPI::populateFoodList(const QList<QString> &foods)
+QVariant foodAPI::getModelByDate() const
 {
-    // QMap orders stuff by key
-    if (foods.empty()) {
-
-    } else {
-        tempFoods_.insert(foods[0], foods);
-    }
-    // Async reply counter
-    --parsedAndReady_;
-    // if everything parsed, we are ready to push data to UI
-    if(parsedAndReady_ == 0) {
-        loading_ = false;
-        orderFoodsByKitchenName();
-        emit dataReady(food_);
-        emit loading(loading_);
-    }
+    return QVariant::fromValue((QObject*) model_);
 }
 
-QList<QString> foodAPI::getFoods()
+void foodAPI::setModelByDate(QDate date)
 {
-    return food_;
-}
-
-bool foodAPI::loadingStatus()
-{
-    return loading_;
+    model_ = parser_->getModelByDate(date);
+    emit modelChanged();
 }
 
 bool foodAPI::settingsLoadingStatus()
@@ -119,13 +90,4 @@ void foodAPI::saveSettings(QList<QString> settings)
 QList<QString> foodAPI::loadSettings()
 {
     return settingsManager_->loadSettings();
-}
-
-void foodAPI::orderFoodsByKitchenName()
-{
-    QMapIterator<QString, QList<QString> > i(tempFoods_);
-    while (i.hasNext()) {
-        i.next();
-        food_.append(i.value());
-    }
 }

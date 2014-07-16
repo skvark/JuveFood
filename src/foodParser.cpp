@@ -3,13 +3,17 @@
 foodParser::foodParser(QObject *parent):
     QObject(parent)
 {
+
+    RestaurantModel *model = new RestaurantModel();
+    models_.insert(QDate::currentDate(), model);
+
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
     httpEngine_ = new HTTPEngine();
 
-    QObject::connect(httpEngine_, SIGNAL(initData(const QByteArray&)),
+    QObject::connect(httpEngine_, SIGNAL(kitchenData(const QByteArray&)),
                      this, SLOT(parseInitData(const QByteArray&)));
 
-    QObject::connect(httpEngine_, SIGNAL(foodDataReady(const QByteArray&)),
+    QObject::connect(httpEngine_, SIGNAL(oneDayfoodDataReady(const QByteArray&)),
                      this, SLOT(parseFoodData(const QByteArray&)));
 
     QObject::connect(httpEngine_, SIGNAL(networkError(const QNetworkReply::NetworkError&)),
@@ -44,14 +48,14 @@ Kitchen *foodParser::getKitchenByName(QString kitchenName)
 }
 
 // Gets all the foods from a kitchen
-void foodParser::parseKitchenFood(QString kitchenName, QString lang)
+void foodParser::parseKitchenFood(QString kitchenName, QString lang, QDate date)
 {
     Kitchen *kitchen = getKitchenByName(kitchenName);
     if (kitchen == NULL) {
         return;
     }
-    QList<QPair<QString, QString> >  params = kitchen->getByWeekdayQuery(lang);
-    httpEngine_->get(params);
+    QList<QPair<QString, QString> >  params = kitchen->getByWeekdayQuery(lang, date);
+    httpEngine_->getOneDayFoods(params);
 }
 
 QList<QString> foodParser::getKitchenNames()
@@ -61,6 +65,37 @@ QList<QString> foodParser::getKitchenNames()
         kitchens.append(kitchen->getKitchenName());
     }
     return kitchens;
+}
+
+RestaurantModel *foodParser::getModelByDate(QDate date)
+{
+    if(models_.find(date) != models_.end()) {
+        qDebug() << "kissa";
+        return models_.value(date);
+    } else {
+        return nullptr;
+    }
+}
+
+QDate foodParser::parseDate(QJsonDocument document) {
+
+    QJsonObject restaurant = document.object();
+    QJsonArray mealoptions = restaurant["MealOptions"].toArray();
+    QDate date;
+
+    foreach (auto value, mealoptions) {
+        QJsonObject obj = value.toObject();
+        if (obj["MenuDate"].toString() != "") {
+            qDebug() << obj["MenuDate"].toString();
+            QString dirty = obj["MenuDate"].toString();
+            QStringList list = dirty.split(QChar('.'));
+            date.setDate(list[2].toInt(),
+                          list[1].toInt(),
+                          list[0].toInt());
+            return date;
+        }
+    }
+    return date;
 }
 
 /* This slot is called when app is started.
@@ -75,6 +110,7 @@ void foodParser::parseInitData(const QByteArray &data)
     QJsonParseError err;
 
     QJsonDocument doc = QJsonDocument::fromJson(data2, &err);
+
     QJsonArray restaurants = doc.array();
 
     foreach (const QJsonValue &value, restaurants) {
@@ -90,11 +126,9 @@ void foodParser::parseInitData(const QByteArray &data)
             QString name = kitchenInfo[QString("KitchenName")].toString().toUtf8() +
                    QString(" - ") +
                    kitchenInfo[QString("Name")].toString().toUtf8();
+
             QString shortName;
-
             nameCompactor(name, shortName);
-
-
 
             kitchen = new Kitchen(kitchenInfo[QString("KitchenId")].toDouble(),
                                   kitchenInfo[QString("KitchenInfoId")].toDouble(),
@@ -102,7 +136,8 @@ void foodParser::parseInitData(const QByteArray &data)
                                   kitchenInfo[QString("MenuTypeId")].toDouble(),
                                   name,
                                   shortName);
-            kitchens_.push_back(kitchen);
+
+            kitchens_.append(kitchen);
             name.clear();
         }
     }
@@ -118,13 +153,24 @@ void foodParser::parseFoodData(const QByteArray &data)
     cleanJSON(data2);
     QJsonParseError err;
     QList<QString> foods;
-    QList<QString> mainFoodNames;
 
     QJsonDocument doc = QJsonDocument::fromJson(data2, &err);
 
     if(doc.isEmpty()) {
-        emit foodReady(foods);
+        return;
     }
+
+    QDate date = parseDate(doc);
+
+    qDebug() << "asdasdsa";
+
+    if(models_.find(date) == models_.end()) {
+        RestaurantModel* model = new RestaurantModel();
+        models_.insert(date, model);
+        qDebug() << date;
+    }
+
+    qDebug() << models_.size();
 
     QJsonObject restaurant = doc.object();
     QJsonArray mealoptions = restaurant["MealOptions"].toArray();
@@ -133,13 +179,9 @@ void foodParser::parseFoodData(const QByteArray &data)
                    restaurant["MenuTypeName"].toString();
 
     QString shortName;
-
     nameCompactor(name, shortName);
 
-
-    foods.append(shortName);
-
-    foreach (const QJsonValue &value, mealoptions) {
+    foreach (auto value, mealoptions) {
 
         QString food = "";
         QJsonObject obj = value.toObject();
@@ -148,20 +190,18 @@ void foodParser::parseFoodData(const QByteArray &data)
         if (obj["ForceMajeure"].toString() != "") {
             food += QString("\u2022 ") + obj["ForceMajeure"].toString();
             foods.append(food);
-            mainFoodNames.append(food);
             continue;
         }
 
         QJsonArray arr = obj["MenuItems"].toArray();
         unsigned int counter = 0;
 
-        foreach (const QJsonValue &value2, arr) {
+        foreach (auto value2, arr) {
             QJsonObject obj = value2.toObject();
             if(counter > 0) {
                 food += ", " + obj["Name"].toString();
             } else {
                 food += QString("\u2022 ") + obj["Name"].toString();
-                mainFoodNames.append(QString("\u2022 ") + obj["Name"].toString());
             }
             ++counter;
         }
@@ -170,17 +210,14 @@ void foodParser::parseFoodData(const QByteArray &data)
         }
     }
 
-    // save main food names
-    if (getKitchenByName(name) != NULL) {
-        getKitchenByName(name)->addTodaysFoods(mainFoodNames);
-    }
+    RestaurantModel* model = models_.find(date).value();
+    Restaurant* res = models_.find(date).value()->alreadyAdded(name);
 
-    if (foods.length() > 2) {
-        foods.append(QString(""));
-        emit foodReady(foods);
+    if(!res) {
+        Restaurant* restaurant = new Restaurant(name, shortName, foods);
+        model->addRestaurant(restaurant);
     } else {
-        QList<QString> empty;
-        emit foodReady(empty);
+        res->setFoods(foods);
     }
 }
 

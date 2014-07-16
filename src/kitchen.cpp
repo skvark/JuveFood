@@ -20,11 +20,10 @@ QString Kitchen::getKitchenName()
     return name_;
 }
 
-QList<QPair<QString, QString> > Kitchen::getByWeekdayQuery(QString lang)
+QList<QPair<QString, QString> > Kitchen::getByWeekdayQuery(QString lang, QDate date)
 {
     // format:
     // GetMenuByWeekday?KitchenId=6&MenuTypeId=60&Week=50&Weekday=3&lang='fi'&format=json
-    QDate date = QDate::currentDate();
     QList<QPair<QString, QString> > query;
 
     QString language = "Finnish";
@@ -33,6 +32,7 @@ QList<QPair<QString, QString> > Kitchen::getByWeekdayQuery(QString lang)
     } else {
         language = "'en'";
     }
+
 
     // Add query components to a list
     query.append(qMakePair(QString("KitchenId"), QString::number(kitchenId_, 10)));

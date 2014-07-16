@@ -5,8 +5,10 @@
 #include <QList>
 #include <foodParser.h>
 #include <settings.h>
+#include <restaurantmodel.h>
 #include <QMap>
 #include <QDebug>
+#include <QDate>
 
 /* Interface for UI.
 */
@@ -14,9 +16,8 @@
 class foodAPI : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QList<QString> foods READ getFoods NOTIFY dataReady)
-    Q_PROPERTY(bool loading READ loadingStatus NOTIFY loading)
     Q_PROPERTY(bool settingsLoading READ settingsLoadingStatus NOTIFY settingsLoading)
+    Q_PROPERTY(QVariant getModelByDate READ getModelByDate CONSTANT)
 
 public:
     foodAPI(QObject *parent = 0);
@@ -27,32 +28,30 @@ public:
     Q_INVOKABLE void saveSettings(QList<QString> settings);
     Q_INVOKABLE bool settingsLoadingStatus();
     Q_INVOKABLE QList<QString> loadSettings();
+    Q_INVOKABLE QVariant getModelByDate() const;
+    Q_INVOKABLE void setModelByDate(QDate date);
 
     void getFoodBySettings();
     void orderFoodsByKitchenName();
-    bool loadingStatus();
-    QList<QString> getFoods();
+
 
 signals:
     // This signal is sent always when food data is fetched and ready
     void dataReady(QList<QString> foods);
     void loading(bool loading);
     void settingsLoading(bool loading);
+    void modelChanged();
 
 public slots:
-    void populateFoodList(const QList<QString> &foods);
     void kitchensReady();
     void update();
 
 private:
     foodParser* parser_;
-    QList<QString> food_;
-    QMap<QString, QList<QString> > tempFoods_;
     SettingsManager* settingsManager_;
-    // helper variable to know when parsing is finished
-    bool loading_;
     bool settingsLoading_;
-    int parsedAndReady_;
+    RestaurantModel* model_;
+
 };
 
 #endif // GETFOODDATA_H

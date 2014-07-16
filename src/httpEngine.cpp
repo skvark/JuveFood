@@ -10,7 +10,7 @@ HTTPEngine::HTTPEngine(QObject *parent) :
 
 }
 
-void HTTPEngine::get(QList<QPair<QString, QString> > &queryItems)
+void HTTPEngine::getOneDayFoods(QList<QPair<QString, QString> > &queryItems)
 {
     QUrlQuery url;
     url.setQueryItems(queryItems);
@@ -18,6 +18,11 @@ void HTTPEngine::get(QList<QPair<QString, QString> > &queryItems)
     QNetworkRequest request(api_url);
     QNetworkReply *reply = nam_.get(request);
     hash_[reply] = kitchendata;
+}
+
+void HTTPEngine::getKitchenInfo(QList<QPair<QString, QString> > &queryItems)
+{
+
 }
 
 void HTTPEngine::getKitchens()
@@ -34,34 +39,34 @@ void HTTPEngine::finished(QNetworkReply *reply)
     switch(hash_[reply])
     {
     case kitchendata:
-        parseGetRequest(reply);
+        parseOneDayFoodsRequest(reply);
         break;
     case kitchens:
-        parseInitDataRequest(reply);
+        parseKitchensDataRequest(reply);
         break;
     }
     hash_.remove(reply);
 }
 
-void HTTPEngine::parseGetRequest(QNetworkReply *finished)
+void HTTPEngine::parseOneDayFoodsRequest(QNetworkReply *finished)
 {
     if ( finished->error() != QNetworkReply::NoError )
     {
         emit networkError(finished->error());
     }
     QByteArray data = finished->readAll();
-    emit foodDataReady(data);
+    emit oneDayfoodDataReady(data);
     finished->deleteLater();
 }
 
-void HTTPEngine::parseInitDataRequest(QNetworkReply *finished)
+void HTTPEngine::parseKitchensDataRequest(QNetworkReply *finished)
 {
     if ( finished->error() != QNetworkReply::NoError )
     {
         return;
     }
     QByteArray data = finished->readAll();
-    emit initData(data);
+    emit kitchenData(data);
     finished->deleteLater();
 }
 

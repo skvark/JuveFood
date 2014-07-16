@@ -17,7 +17,7 @@ public:
             QString shortName);
 
     QString getKitchenName();
-    QList<QPair<QString, QString> > getByWeekdayQuery(QString lang);
+    QList<QPair<QString, QString> > getByWeekdayQuery(QString lang, QDate date);
     QList<QString> getTodaysFoods();
     QString getShortName();
     void addTodaysFoods(QList<QString> food);

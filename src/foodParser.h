@@ -14,6 +14,8 @@
 #include <QTextCodec>
 #include <QNetworkReply>
 #include <QDebug>
+#include <restaurantmodel.h>
+#include <QDate>
 
 class foodParser : public QObject
 {
@@ -24,8 +26,9 @@ public:
 
     Kitchen *getKitchenByName(QString kitchenName);
     void parseKitchens();
-    void parseKitchenFood(QString kitchenName, QString lang);
+    void parseKitchenFood(QString kitchenName, QString lang, QDate date);
     QList<QString> getKitchenNames();
+    RestaurantModel *getModelByDate(QDate date);
 
 signals:
     void initData();
@@ -39,7 +42,9 @@ public slots:
 private:
     HTTPEngine *httpEngine_;
     QVector<Kitchen*> kitchens_;
+    QMap<QDate, RestaurantModel*> models_;
     void addKitchens();
+    QDate parseDate(QJsonDocument document);
 };
 
 #endif // FOODPARSER_H

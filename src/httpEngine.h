@@ -20,15 +20,16 @@ public:
     };
     GetMethod methods;
     void getKitchens();
-    void get(QList< QPair<QString, QString> >& queryItems);
+    void getOneDayFoods(QList< QPair<QString, QString> >& queryItems);
+    void getKitchenInfo(QList< QPair<QString, QString> >& queryItems);
 
 private:
-    void parseGetRequest(QNetworkReply*);
-    void parseInitDataRequest(QNetworkReply*);
+    void parseOneDayFoodsRequest(QNetworkReply*);
+    void parseKitchensDataRequest(QNetworkReply*);
 
 signals:
-    void foodDataReady(const QByteArray &food);
-    void initData(const QByteArray &food);
+    void oneDayfoodDataReady(const QByteArray &food);
+    void kitchenData(const QByteArray &food);
     void networkError(QNetworkReply::NetworkError error);
 
 public slots:
