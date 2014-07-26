@@ -6,7 +6,7 @@ foodAPI::foodAPI(QObject *parent):
     parser_ = new foodParser();
     settingsManager_ = new SettingsManager();
     settingsLoading_ = true;
-    setModelByDate(QDate::currentDate());
+    setModelByDate(QDate(2014, 7, 24));
     QObject::connect(parser_, SIGNAL(initData()),
                      this, SLOT(kitchensReady()));
 }
@@ -40,7 +40,7 @@ void foodAPI::getFoodBySettings()
     }
 
     foreach(QString name, settings) {
-        parser_->parseKitchenFood(name, lang, QDate::currentDate());
+        parser_->parseKitchenFood(name, lang, QDate(2014, 7, 24));
     }
 }
 
@@ -54,7 +54,7 @@ void foodAPI::kitchensReady()
 }
 
 QVariant foodAPI::getModelByDate() const
-{
+{ 
     return QVariant::fromValue((QObject*) model_);
 }
 

@@ -5,7 +5,8 @@ foodParser::foodParser(QObject *parent):
 {
 
     RestaurantModel *model = new RestaurantModel();
-    models_.insert(QDate::currentDate(), model);
+    QDate now = QDate(2014, 7, 24);
+    models_.insert(now, model);
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
     httpEngine_ = new HTTPEngine();

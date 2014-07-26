@@ -33,4 +33,6 @@ private:
      QList<Restaurant*> restaurants_;
  };
 
+Q_DECLARE_METATYPE(RestaurantModel*)
+
 #endif // RESTAURANTMODEL_H

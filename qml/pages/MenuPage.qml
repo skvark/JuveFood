@@ -7,7 +7,7 @@ Page {
     BusyIndicator {
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
-        running: load
+        running: false
     }
 
     // Update is too fast. This waits for pulley menu animation completion.
@@ -17,72 +17,60 @@ Page {
         onTriggered: updateFoods();
    }
 
-    SilicaListView {
 
-        anchors.fill: parent
-        id: listview
-        model: foodAPI.getModelByDate
+   SlideshowView {
 
-        header: Component {
-            PageHeader {
-                title: { date + ". Menus" + foodAPI.getModelByDate }
+            id: menuView
+            itemWidth: width
+            itemHeight: height
+            height: window.height
+            clip: true
+
+            anchors {
+                top: parent.top;
+                left: parent.left;
+                right: parent.right
             }
-        }
 
-        PullDownMenu {
-            id: menu
-            MenuItem {
-                text: "About"
-                onClicked: {
-                    pageStack.push("About.qml")
+            model: VisualItemModel {
+                    OneDayFood { id: ruoka }
+                    OneDayFood { id: ruoka2 }
                 }
-            }
-
-            MenuItem {
-
-                text: "Settings"
-                onClicked: {
-                    var dialog = pageStack.push("Settings.qml");
-                }
-            }
-            MenuItem {
-                text: "Update"
-                onClicked: {
-                    foodAPI.setModelByDate(new Date());
-                }
-            }
-        }
-
-        contentHeight: page.height
-        contentWidth: page.width
-
-        delegate: Row {
-
-            spacing: Theme.paddingLarge
-            anchors.left: parent.left
-            anchors.leftMargin: margin
-
-            Label {
-
-                width: 520
-                wrapMode: Text.WordWrap
-                font.pixelSize: size
-                text: name
-                color: colorize ? Theme.highlightColor : Theme.primaryColor
-
-            }
-        }
-        VerticalScrollDecorator { flickable: listview }
 
     }
 
-    property string date: Qt.formatDateTime(new Date(), "d.M");
-    property bool load: false;
+    // initial date
+    property var date: new Date();
+    property int current_difference: 0;
+
+    function increaseDate() {
+        date.setDate(date.getDate() + 1);
+        ++current_difference;
+    }
+
+    function decreaseDate() {
+        date.setDate(date.getDate() + 1);
+        --current_difference;
+    }
+
+    function checkDateLimit() {
+        if(current_difference < 7 && current_difference > -7) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     function updateFoods() {
-        listview.model = foodAPI.getModelByDate
+        foodAPI.setModelByDate(date);
     }
 
+    Connections {
+           target: foodAPI
+           onModelChanged: {
+               listview.model = foodAPI.getModelByDate
+           }
+    }
 }
 
 

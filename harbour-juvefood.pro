@@ -32,7 +32,8 @@ OTHER_FILES += \
     qml/pages/helper.js \
     qml/pages/About.qml \
     qml/harbour-juvefood.qml \
-    rpm/harbour-juvefood.yaml
+    rpm/harbour-juvefood.yaml \
+    qml/pages/OneDayFood.qml
 
 HEADERS += \
     src/kitchen.h \
