@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "helper.js" as Helper
 
 Page {
     id: page
@@ -88,7 +89,8 @@ Page {
     // reinitialize all visualitemmodels with new models
     // (if day has chnaged) and update data
     function update() {
-        if (first_date !== new Date()) {
+        if (first_date.getDay() !== (new Date()).getDay()) {
+            console.log("sadasdas");
             foodAPI.deleteModel(first_date);
             first_date = new Date();
             foodAPI.createNewModel(addDays(first_date, 6));
@@ -109,6 +111,10 @@ Page {
         foods6.initialize(addDays(date, 5));
         foods7.initialize(addDays(date, 6));
         foodAPI.update();
+    }
+
+    function getDayNameOfWeek(day) {
+        return Helper.weekday[day];
     }
 
     Component.onCompleted: {

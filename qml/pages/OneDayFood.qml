@@ -7,10 +7,12 @@ Item {
     width: menuView.width
     property string headerdate: ""
     property string month: ""
+    property string dayofweek: ""
 
     function initialize(date) {
         headerdate = date.getDate().toString()
         month = (date.getMonth() + 1).toString()
+        dayofweek = getDayNameOfWeek(date.getDay());
         listview.model = foodAPI.getModelByDate(date);
     }
 
@@ -20,7 +22,7 @@ Item {
 
         header: Component {
             PageHeader {
-                title: { headerdate + "." + month + ". Menus"}
+                title: { dayofweek + " " + headerdate + "." + month + ". Menus"}
             }
         }
 
@@ -114,6 +116,11 @@ Item {
 
         contentHeight: page.height
         contentWidth: page.width
+
+        ViewPlaceholder {
+            enabled: listview.count == 0
+            text: "No menus available for any of your selected restaurants today."
+        }
 
         VerticalScrollDecorator { flickable: listview }
     }
