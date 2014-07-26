@@ -6,7 +6,6 @@ foodAPI::foodAPI(QObject *parent):
     parser_ = new foodParser();
     settingsManager_ = new SettingsManager();
     settingsLoading_ = true;
-    setModelByDate(QDate(2014, 7, 24));
     QObject::connect(parser_, SIGNAL(initData()),
                      this, SLOT(kitchensReady()));
 }
@@ -19,8 +18,24 @@ foodAPI::~foodAPI()
     settingsManager_ = 0;
 }
 
+void foodAPI::init() {
+    parser_->parseKitchens();
+}
+
+void foodAPI::deleteModel(QDate date)
+{
+    parser_->deleteModel(date);
+}
+
 void foodAPI::update() {
+    parser_->clearModels();
     getFoodBySettings();
+}
+
+// creates new model by date and initializes
+// it with restaurants in the settings
+void foodAPI::createNewModel(QDate date) {
+    parser_->addNewModel(date);
 }
 
 void foodAPI::getFoodBySettings()
@@ -40,7 +55,7 @@ void foodAPI::getFoodBySettings()
     }
 
     foreach(QString name, settings) {
-        parser_->parseKitchenFood(name, lang, QDate(2014, 7, 24));
+        parser_->parseKitchenFood(name, lang);
     }
 }
 
@@ -53,15 +68,9 @@ void foodAPI::kitchensReady()
     getFoodBySettings();
 }
 
-QVariant foodAPI::getModelByDate() const
+QVariant foodAPI::getModelByDate(QDate date) const
 { 
-    return QVariant::fromValue((QObject*) model_);
-}
-
-void foodAPI::setModelByDate(QDate date)
-{
-    model_ = parser_->getModelByDate(date);
-    emit modelChanged();
+    return QVariant::fromValue((QObject*) parser_->getModelByDate(date));
 }
 
 bool foodAPI::settingsLoadingStatus()
@@ -83,7 +92,7 @@ QList<QString> foodAPI::getKitchenNameList()
 void foodAPI::saveSettings(QList<QString> settings)
 {
     if(settingsManager_->saveSettings(settings)) {
-        getFoodBySettings();
+        update();
     }
 }
 

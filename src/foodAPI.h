@@ -17,7 +17,6 @@ class foodAPI : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool settingsLoading READ settingsLoadingStatus NOTIFY settingsLoading)
-    Q_PROPERTY(QVariant getModelByDate READ getModelByDate CONSTANT)
 
 public:
     foodAPI(QObject *parent = 0);
@@ -28,12 +27,13 @@ public:
     Q_INVOKABLE void saveSettings(QList<QString> settings);
     Q_INVOKABLE bool settingsLoadingStatus();
     Q_INVOKABLE QList<QString> loadSettings();
-    Q_INVOKABLE QVariant getModelByDate() const;
-    Q_INVOKABLE void setModelByDate(QDate date);
+    Q_INVOKABLE QVariant getModelByDate(QDate date) const;
+    Q_INVOKABLE void createNewModel(QDate date);
+    Q_INVOKABLE void init();
+    Q_INVOKABLE void deleteModel(QDate date);
 
     void getFoodBySettings();
     void orderFoodsByKitchenName();
-
 
 signals:
     // This signal is sent always when food data is fetched and ready

@@ -11,12 +11,11 @@ Page {
     }
 
     // Update is too fast. This waits for pulley menu animation completion.
-    Timer {
+   Timer {
         id: timer
         interval: 500; running: false; repeat: false
-        onTriggered: updateFoods();
+        onTriggered: update();
    }
-
 
    SlideshowView {
 
@@ -33,43 +32,87 @@ Page {
             }
 
             model: VisualItemModel {
-                    OneDayFood { id: ruoka }
-                    OneDayFood { id: ruoka2 }
+                    id: days
+                    OneDayFood { id: foods1 }
+                    OneDayFood { id: foods2 }
+                    OneDayFood { id: foods3 }
+                    OneDayFood { id: foods4 }
+                    OneDayFood { id: foods5 }
+                    OneDayFood { id: foods6 }
+                    OneDayFood { id: foods7 }
                 }
 
     }
 
     // initial date
-    property var date: new Date();
-    property int current_difference: 0;
+    property var first_date
 
-    function increaseDate() {
-        date.setDate(date.getDate() + 1);
-        ++current_difference;
+    function updateFoods() {
+        foodAPI.update();
     }
 
-    function decreaseDate() {
-        date.setDate(date.getDate() + 1);
-        --current_difference;
+    function addDays(theDate, days) {
+        return new Date(theDate.getTime() + days*24*60*60*1000);
     }
 
-    function checkDateLimit() {
-        if(current_difference < 7 && current_difference > -7) {
-            return true;
+    // called upon startup: set initial starting point and populates all models
+    function initialize(date) {
+
+        first_date = date
+
+        foodAPI.createNewModel(date);
+        foods1.initialize(date);
+
+        foodAPI.createNewModel(addDays(date, 1));
+        foods2.initialize(addDays(date, 1));
+
+        foodAPI.createNewModel(addDays(date, 2));
+        foods3.initialize(addDays(date, 2));
+
+        foodAPI.createNewModel(addDays(date, 3));
+        foods4.initialize(addDays(date, 3));
+
+        foodAPI.createNewModel(addDays(date, 4));
+        foods5.initialize(addDays(date, 4));
+
+        foodAPI.createNewModel(addDays(date, 5));
+        foods6.initialize(addDays(date, 5));
+
+        foodAPI.createNewModel(addDays(date, 6));
+        foods7.initialize(addDays(date, 6));
+
+        foodAPI.init();
+
+    }
+
+    // reinitialize all visualitemmodels with new models
+    // (if day has chnaged) and update data
+    function update() {
+        if (first_date !== new Date()) {
+            foodAPI.deleteModel(first_date);
+            first_date = new Date();
+            foodAPI.createNewModel(addDays(first_date, 6));
+            reInitialize(first_date);
         } else {
-            return false;
+            foodAPI.update();
         }
     }
 
-    function updateFoods() {
-        foodAPI.setModelByDate(date);
+    // updates slideshows views +1 day
+    // parameter is the new starting date
+    function reInitialize(date) {
+        foods1.initialize(date);
+        foods2.initialize(addDays(date, 1));
+        foods3.initialize(addDays(date, 2));
+        foods4.initialize(addDays(date, 3));
+        foods5.initialize(addDays(date, 4));
+        foods6.initialize(addDays(date, 5));
+        foods7.initialize(addDays(date, 6));
+        foodAPI.update();
     }
 
-    Connections {
-           target: foodAPI
-           onModelChanged: {
-               listview.model = foodAPI.getModelByDate
-           }
+    Component.onCompleted: {
+        initialize(new Date());
     }
 }
 

@@ -5,6 +5,14 @@ Item {
 
     height: menuView.height;
     width: menuView.width
+    property string headerdate: ""
+    property string month: ""
+
+    function initialize(date) {
+        headerdate = date.getDate().toString()
+        month = (date.getMonth() + 1).toString()
+        listview.model = foodAPI.getModelByDate(date);
+    }
 
     SilicaListView {
 
@@ -12,7 +20,7 @@ Item {
 
         header: Component {
             PageHeader {
-                title: { date.getDate() + "." + date.getMonth() + ". Menus"}
+                title: { headerdate + "." + month + ". Menus"}
             }
         }
 
@@ -34,13 +42,12 @@ Item {
             MenuItem {
                 text: "Update"
                 onClicked: {
-                    foodAPI.setModelByDate(date);
+                    timer.start();
                 }
             }
         }
 
         anchors.fill: parent
-        model: foodAPI.getModelByDate
 
         delegate: Item {
 

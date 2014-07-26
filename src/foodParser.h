@@ -26,9 +26,12 @@ public:
 
     Kitchen *getKitchenByName(QString kitchenName);
     void parseKitchens();
-    void parseKitchenFood(QString kitchenName, QString lang, QDate date);
+    void parseKitchenFood(QString kitchenName, QString lang);
     QList<QString> getKitchenNames();
     RestaurantModel *getModelByDate(QDate date);
+    void addNewModel(QDate date);
+    void clearModels();
+    void deleteModel(QDate date);
 
 signals:
     void initData();

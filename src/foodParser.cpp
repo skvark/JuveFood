@@ -3,11 +3,6 @@
 foodParser::foodParser(QObject *parent):
     QObject(parent)
 {
-
-    RestaurantModel *model = new RestaurantModel();
-    QDate now = QDate(2014, 7, 24);
-    models_.insert(now, model);
-
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
     httpEngine_ = new HTTPEngine();
 
@@ -19,8 +14,6 @@ foodParser::foodParser(QObject *parent):
 
     QObject::connect(httpEngine_, SIGNAL(networkError(const QNetworkReply::NetworkError&)),
                      this, SLOT(error(const QNetworkReply::NetworkError&)));
-
-    parseKitchens();
 }
 
 foodParser::~foodParser()
@@ -49,14 +42,16 @@ Kitchen *foodParser::getKitchenByName(QString kitchenName)
 }
 
 // Gets all the foods from a kitchen
-void foodParser::parseKitchenFood(QString kitchenName, QString lang, QDate date)
+void foodParser::parseKitchenFood(QString kitchenName, QString lang)
 {
     Kitchen *kitchen = getKitchenByName(kitchenName);
     if (kitchen == NULL) {
         return;
     }
-    QList<QPair<QString, QString> >  params = kitchen->getByWeekdayQuery(lang, date);
-    httpEngine_->getOneDayFoods(params);
+    foreach(auto date, models_.keys()) {
+        QList<QPair<QString, QString> >  params = kitchen->getByWeekdayQuery(lang, date);
+        httpEngine_->getOneDayFoods(params);
+    }
 }
 
 QList<QString> foodParser::getKitchenNames()
@@ -71,11 +66,30 @@ QList<QString> foodParser::getKitchenNames()
 RestaurantModel *foodParser::getModelByDate(QDate date)
 {
     if(models_.find(date) != models_.end()) {
-        qDebug() << "kissa";
         return models_.value(date);
     } else {
         return nullptr;
     }
+}
+
+void foodParser::addNewModel(QDate date)
+{
+    RestaurantModel *model = new RestaurantModel();
+    models_.insert(date, model);
+}
+
+void foodParser::clearModels()
+{
+    foreach(auto model, models_) {
+        model->clear();
+    }
+}
+
+void foodParser::deleteModel(QDate date)
+{
+    models_.value(date)->clear();
+    delete models_.value(date);
+    models_.erase(models_.find(date));
 }
 
 QDate foodParser::parseDate(QJsonDocument document) {
@@ -87,7 +101,6 @@ QDate foodParser::parseDate(QJsonDocument document) {
     foreach (auto value, mealoptions) {
         QJsonObject obj = value.toObject();
         if (obj["MenuDate"].toString() != "") {
-            qDebug() << obj["MenuDate"].toString();
             QString dirty = obj["MenuDate"].toString();
             QStringList list = dirty.split(QChar('.'));
             date.setDate(list[2].toInt(),
@@ -163,15 +176,10 @@ void foodParser::parseFoodData(const QByteArray &data)
 
     QDate date = parseDate(doc);
 
-    qDebug() << "asdasdsa";
-
     if(models_.find(date) == models_.end()) {
         RestaurantModel* model = new RestaurantModel();
         models_.insert(date, model);
-        qDebug() << date;
     }
-
-    qDebug() << models_.size();
 
     QJsonObject restaurant = doc.object();
     QJsonArray mealoptions = restaurant["MealOptions"].toArray();

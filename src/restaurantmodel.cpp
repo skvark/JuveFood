@@ -14,7 +14,6 @@ QHash<int, QByteArray> RestaurantModel::roleNames() const
     roles[NameRole] = "name";
     roles[ShortNameRole] = "shortname";
     roles[FoodRole] = "food";
-    roles[HeightRole] = "foodheight";
     return roles;
 }
 
@@ -40,6 +39,13 @@ QHash<int, QByteArray> RestaurantModel::roleNames() const
      return placeholder;
  }
 
+ void RestaurantModel::clear()
+ {
+     beginResetModel();
+     restaurants_.clear();
+     endResetModel();
+ }
+
  QVariant RestaurantModel::data(const QModelIndex & index, int role) const {
 
      if (index.row() < 0 || index.row() > restaurants_.count())
@@ -56,9 +62,6 @@ QHash<int, QByteArray> RestaurantModel::roleNames() const
              foods.append(food + "<br />");
          }
          return foods;
-     }
-     else if (role == HeightRole) {
-         return 35;
      }
      return QVariant();
  }
