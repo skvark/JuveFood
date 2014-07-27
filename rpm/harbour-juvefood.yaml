@@ -1,7 +1,9 @@
 Name: harbour-juvefood
 Summary: Juvenes food application.
-Version: 0.2
-Release: 2
+Version: 1.0
+QMakeOptions:
+- VERSION='%{version}-%{release}'
+Release: 0
 Group: Qt/Qt
 URL: http://example.org/
 License: 'The MIT License (MIT)'

@@ -21,7 +21,6 @@ QHash<int, QByteArray> RestaurantModel::roleNames() const
  {
      beginInsertRows(QModelIndex(), rowCount(), rowCount());
      restaurants_.append(restaurant);
-     qDebug() << restaurant->getName();
      endInsertRows();
  }
 

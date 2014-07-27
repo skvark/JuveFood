@@ -29,8 +29,11 @@ void foodAPI::deleteModel(QDate date)
 
 QString foodAPI::getOpeningHours(QString kitchenName)
 {
-    qDebug() << kitchenName;
-    return parser_->getKitchenByName(kitchenName)->getOpeningHours();
+    Kitchen* kitchen = parser_->getKitchenByName(kitchenName);
+    if(kitchen) {
+        return kitchen->getOpeningHours();
+    }
+    return QString("");
 }
 
 void foodAPI::update() {

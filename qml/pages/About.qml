@@ -27,7 +27,7 @@ Page {
                 horizontalAlignment: Text.AlignHCenter
                 textFormat: Text.RichText;
                 onLinkActivated: Qt.openUrlExternally(link)
-                text: "<h1>JuveFood</h1>v0.2-2<br /><br />" +
+                text: "<h1>JuveFood</h1>v"+APP_VERSION+"<br /><br />" +
 
                       "<style> .legend { font-size: 20px;  } </style>" +
 
