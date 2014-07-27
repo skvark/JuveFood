@@ -53,16 +53,20 @@ Dialog {
 
         }
 
+        anchors.leftMargin: Theme.paddingMedium
+
         SilicaListView {
             parent: page
             id: listView
             y: 390
             width: page.width; height: 500
             model: restaurantModel
+            anchors.leftMargin: Theme.paddingMedium
 
             delegate: BackgroundItem {
                 id: delegate
                 down: check
+
                 Label {
                     id: kitchenlabel
                     anchors.verticalCenter: parent.verticalCenter
@@ -70,6 +74,8 @@ Dialog {
                     font.pixelSize: 26
                     wrapMode: Text.WordWrap
                     text: name
+                    anchors.leftMargin: Theme.paddingMedium
+                    verticalAlignment: Text.AlignVCenter
                     color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
                 }
                 onClicked: select(kitchenlabel.text, index)

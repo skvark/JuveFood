@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     QGuiApplication *app = SailfishApp::application(argc, argv);
     QQuickView *view = SailfishApp::createView();
     view->rootContext()->setContextProperty("foodAPI", &api);
+    view->rootContext()->setContextProperty("APP_VERSION", APP_VERSION);
     view->setSource(SailfishApp::pathTo("qml/harbour-juvefood.qml"));
     view->showFullScreen();
     app->exec();

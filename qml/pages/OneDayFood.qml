@@ -72,14 +72,8 @@ Item {
                 anchors.right: parent.right;
                 anchors.rightMargin: Theme.paddingMedium
                 height: header.height + foodcontent.height + 20;
+                onClicked: pageStack.push(Qt.resolvedUrl("OpeningHours.qml"), { name: name })
 
-            }
-
-            MouseArea {
-                anchors.fill: background
-                onClicked: {
-                    pageStack.push(Qt.resolvedUrl("OpeningHours.qml"), { name: name })
-                }
             }
 
             Column {

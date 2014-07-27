@@ -13,8 +13,8 @@ Name:       harbour-juvefood
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Juvenes food application.
-Version:    0.2
-Release:    2
+Version:    1.0
+Release:    0
 Group:      Qt/Qt
 License:    The MIT License (MIT)
 URL:        http://example.org/
@@ -43,7 +43,8 @@ JuveFood shows menus from any selected Juvenes restaurant.
 # >> build pre
 # << build pre
 
-%qtc_qmake5 
+%qtc_qmake5  \
+    VERSION='%{version}-%{release}'
 
 %qtc_make %{?_smp_mflags}
 
