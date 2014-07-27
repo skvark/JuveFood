@@ -5,27 +5,46 @@
  * It's not pretty but has to be done.
  * Cleans dirty QByteArray so that it can be read to QJsonDocument.
  */
-void cleanJSON(QByteArray &dirty) {
-    // remove "}); from the end
-   dirty.remove(dirty.length() - 4, 4);
-   // remove ({"d":" from the beginning
-   dirty.remove(0, 7);
+void cleanJSON(QByteArray &dirty, bool isInfo) {
 
-   // Juvenes API is eh.. broken.
-   // It's better you don't even try to think what
-   // these lines of code do. Really, just go away.
+    if(!isInfo) {
+       // remove "}); from the end
+       dirty.remove(dirty.length() - 4, 4);
+       // remove ({"d":" from the beginning
+       dirty.remove(0, 7);
 
-   const char* remove = "\\\\\\\"";
-   const char* replace = "";
-   dirty.replace(remove, replace);
+       // Juvenes API is eh.. broken.
+       // It's better you don't even try to think what
+       // these lines of code do. Really, just go away.
 
-   remove = "\\\"";
-   replace = "\"";
-   dirty.replace(remove, replace);
+       const char* remove = "\\\\\\\"";
+       const char* replace = "";
+       dirty.replace(remove, replace);
 
-   remove = "\\u003cbr\\\\/\\u003e";
-   replace = " ";
-   dirty.replace(remove, replace);
+       remove = "\\\"";
+       replace = "\"";
+       dirty.replace(remove, replace);
+
+       remove = "\\u003cbr\\\\/\\u003e";
+       replace = " ";
+       dirty.replace(remove, replace);
+
+    } else {
+        // remove "); from the end
+        dirty.remove(dirty.length() - 2, 2);
+        // remove ({"d":" from the beginning
+        dirty.remove(0, 1);
+    }
+}
+
+QString cleanOpeningHours(QString dirty) {
+    QByteArray utf8string = dirty.toUtf8();
+    utf8string.replace("\\\"", "\"");
+    utf8string.replace("\\/", "/");
+    utf8string.replace("\\u000a", "");
+    utf8string.replace("\"<", "<");
+    utf8string.replace(">\"", ">");
+    return QString::fromUtf8(utf8string);
 }
 
 

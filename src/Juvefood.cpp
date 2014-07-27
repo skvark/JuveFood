@@ -8,6 +8,8 @@
 #include <QQuickView>
 #include <QGuiApplication>
 #include <QCoreApplication>
+#include <restaurant.h>
+#include <QMetaType>
 
 int main(int argc, char *argv[])
 {

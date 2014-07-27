@@ -7,28 +7,36 @@
 #include <QNetworkReply>
 #include <QUrlQuery>
 #include <QHash>
+#include <QPair>
 
 class HTTPEngine : public QObject
 {
     Q_OBJECT
 public:
     HTTPEngine(QObject *parent = 0);
+
     enum GetMethod
     {
         kitchens,
-        kitchendata
+        kitchendata,
+        kitcheninfo
     };
+
     GetMethod methods;
+
     void getKitchens();
-    void get(QList< QPair<QString, QString> >& queryItems);
+    void getOneDayFoods(QList< QPair<QString, QString> >& queryItems);
+    void getKitchenInfo(QList< QPair<QString, QString> >& queryItems, QString kitchen);
 
 private:
-    void parseGetRequest(QNetworkReply*);
-    void parseInitDataRequest(QNetworkReply*);
+    void parseOneDayFoodsRequest(QNetworkReply*);
+    void parseKitchensDataRequest(QNetworkReply*);
+    void parseKitchensInfoRequest(QNetworkReply*, QString kitchen);
 
 signals:
-    void foodDataReady(const QByteArray &food);
-    void initData(const QByteArray &food);
+    void oneDayfoodDataReady(const QByteArray &food);
+    void kitchenData(const QByteArray &food);
+    void kitchenInfo(const QByteArray &info, const QString kitchen);
     void networkError(QNetworkReply::NetworkError error);
 
 public slots:
@@ -36,7 +44,7 @@ public slots:
 
 private:
     QNetworkAccessManager nam_;
-    QHash<QNetworkReply*, GetMethod> hash_;
+    QHash<QNetworkReply*, QPair<GetMethod, QString> > hash_;
 
 };
 

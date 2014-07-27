@@ -1,4 +1,5 @@
 #include "httpengine.h"
+#include <QDebug>
 
 const QString baseUrl = "http://www.juvenes.fi/DesktopModules/Talents.LunchMenu/LunchMenuServices.asmx";
 
@@ -10,14 +11,24 @@ HTTPEngine::HTTPEngine(QObject *parent) :
 
 }
 
-void HTTPEngine::get(QList<QPair<QString, QString> > &queryItems)
+void HTTPEngine::getOneDayFoods(QList<QPair<QString, QString> > &queryItems)
 {
     QUrlQuery url;
     url.setQueryItems(queryItems);
     QUrl api_url(baseUrl + "/GetMenubyWeekday?" + url.toString());
     QNetworkRequest request(api_url);
     QNetworkReply *reply = nam_.get(request);
-    hash_[reply] = kitchendata;
+    hash_[reply] = QPair<GetMethod, QString>(kitchendata, "");
+}
+
+void HTTPEngine::getKitchenInfo(QList<QPair<QString, QString> > &queryItems, QString kitchen)
+{
+    QUrlQuery url;
+    url.setQueryItems(queryItems);
+    QUrl api_url(baseUrl + "/GetKitchenInfo?" + url.toString());
+    QNetworkRequest request(api_url);
+    QNetworkReply *reply = nam_.get(request);
+    hash_[reply] = QPair<GetMethod, QString>(kitcheninfo, kitchen);
 }
 
 void HTTPEngine::getKitchens()
@@ -26,42 +37,56 @@ void HTTPEngine::getKitchens()
     QUrl api_url(url.toString());
     QNetworkRequest request(api_url);
     QNetworkReply *reply = nam_.get(request);
-    hash_[reply] = kitchens;
+    hash_[reply] = QPair<GetMethod, QString>(kitchens, "");
 }
 
 void HTTPEngine::finished(QNetworkReply *reply)
 {
-    switch(hash_[reply])
+    switch(hash_[reply].first)
     {
     case kitchendata:
-        parseGetRequest(reply);
+        parseOneDayFoodsRequest(reply);
         break;
     case kitchens:
-        parseInitDataRequest(reply);
+        parseKitchensDataRequest(reply);
+        break;
+    case kitcheninfo:
+        parseKitchensInfoRequest(reply, hash_[reply].second);
         break;
     }
     hash_.remove(reply);
 }
 
-void HTTPEngine::parseGetRequest(QNetworkReply *finished)
+void HTTPEngine::parseOneDayFoodsRequest(QNetworkReply *finished)
 {
-    if ( finished->error() != QNetworkReply::NoError )
+    if (finished->error() != QNetworkReply::NoError)
     {
         emit networkError(finished->error());
     }
     QByteArray data = finished->readAll();
-    emit foodDataReady(data);
+    emit oneDayfoodDataReady(data);
     finished->deleteLater();
 }
 
-void HTTPEngine::parseInitDataRequest(QNetworkReply *finished)
+void HTTPEngine::parseKitchensDataRequest(QNetworkReply *finished)
 {
-    if ( finished->error() != QNetworkReply::NoError )
+    if (finished->error() != QNetworkReply::NoError)
     {
         return;
     }
     QByteArray data = finished->readAll();
-    emit initData(data);
+    emit kitchenData(data);
+    finished->deleteLater();
+}
+
+void HTTPEngine::parseKitchensInfoRequest(QNetworkReply *finished, QString kitchen)
+{
+    if (finished->error() != QNetworkReply::NoError)
+    {
+        return;
+    }
+    QByteArray data = finished->readAll();
+    emit kitchenInfo(data, kitchen);
     finished->deleteLater();
 }
 

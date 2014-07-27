@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "helper.js" as Helper
 
 Page {
     id: page
@@ -7,138 +8,112 @@ Page {
     BusyIndicator {
         anchors.centerIn: parent
         size: BusyIndicatorSize.Large
-        running: load
+        running: false
     }
 
     // Update is too fast. This waits for pulley menu animation completion.
-    Timer {
+   Timer {
         id: timer
         interval: 500; running: false; repeat: false
-        onTriggered: updateFoods();
+        onTriggered: update();
    }
 
-    SilicaListView {
+   SlideshowView {
 
-        anchors.fill: parent
-        id: listview
-        model: foodModel
+            id: menuView
+            itemWidth: width
+            itemHeight: height
+            height: window.height
+            clip: true
 
-        header: Component {
-            PageHeader {
-                title: { date + ". Menus" }
-            }
-        }
-
-        PullDownMenu {
-            id: menu
-            MenuItem {
-                text: "About"
-                onClicked: {
-                    pageStack.push("About.qml")
-                }
+            anchors {
+                top: parent.top;
+                left: parent.left;
+                right: parent.right
             }
 
-            MenuItem {
-
-                text: "Settings"
-                onClicked: {
-                    var dialog = pageStack.push("Settings.qml");
-                    dialog.accepted.connect(function() {
-                                foodModel.clear();
-                            })
-                }
+            model: VisualItemModel {
+                    id: days
+                    OneDayFood { id: foods1 }
+                    OneDayFood { id: foods2 }
+                    OneDayFood { id: foods3 }
+                    OneDayFood { id: foods4 }
+                    OneDayFood { id: foods5 }
+                    OneDayFood { id: foods6 }
+                    OneDayFood { id: foods7 }
             }
-            MenuItem {
-                text: "Update"
-                onClicked: {
-                    timer.start()
-                }
-            }
-        }
 
-        contentHeight: page.height
-        contentWidth: page.width
+    }
 
-        delegate: Row {
+    // initial date
+    property var first_date
 
-            spacing: Theme.paddingLarge
-            anchors.left: parent.left
-            anchors.leftMargin: margin
+    function addDays(theDate, days) {
+        return new Date(theDate.getTime() + days*24*60*60*1000);
+    }
 
-            Label {
+    // called upon startup: sets initial starting point and populates all models
+    function initialize(date) {
 
-                width: 520
-                wrapMode: Text.WordWrap
-                font.pixelSize: size
-                text: name
-                color: colorize ? Theme.highlightColor : Theme.primaryColor
+        first_date = date
 
-            }
-        }
-        VerticalScrollDecorator { flickable: listview }
+        foodAPI.createNewModel(date);
+        foods1.initialize(date);
 
-        ViewPlaceholder {
-            enabled: listview.count == 0 && !load
-            text: "No restaurants added yet. You can add them in settings."
-        }
+        foodAPI.createNewModel(addDays(date, 1));
+        foods2.initialize(addDays(date, 1));
 
-        ViewPlaceholder {
-            enabled: listview.count == 1 && !load
-            text: "No menus available for any of your selected restaurants today."
+        foodAPI.createNewModel(addDays(date, 2));
+        foods3.initialize(addDays(date, 2));
+
+        foodAPI.createNewModel(addDays(date, 3));
+        foods4.initialize(addDays(date, 3));
+
+        foodAPI.createNewModel(addDays(date, 4));
+        foods5.initialize(addDays(date, 4));
+
+        foodAPI.createNewModel(addDays(date, 5));
+        foods6.initialize(addDays(date, 5));
+
+        foodAPI.createNewModel(addDays(date, 6));
+        foods7.initialize(addDays(date, 6));
+
+        foodAPI.init();
+
+    }
+
+    // reinitialize all visualitemmodels with new models
+    // (if day has chnaged) and update data
+    function update() {
+        if (first_date.getDay() !== (new Date()).getDay()) {
+            foodAPI.deleteModel(first_date);
+            first_date = new Date();
+            foodAPI.createNewModel(addDays(first_date, 6));
+            reInitialize(first_date);
+        } else {
+            foodAPI.update();
         }
     }
 
-    ListModel {
-        id: foodModel
-    }
-
-    property string date: Qt.formatDateTime(new Date(), "d.M");
-    property bool load: true;
-
-    function updateFoods() {
-        foodModel.clear();
+    // updates slideshows views +1 day
+    // date parameter is the new starting date
+    function reInitialize(date) {
+        foods1.initialize(date);
+        foods2.initialize(addDays(date, 1));
+        foods3.initialize(addDays(date, 2));
+        foods4.initialize(addDays(date, 3));
+        foods5.initialize(addDays(date, 4));
+        foods6.initialize(addDays(date, 5));
+        foods7.initialize(addDays(date, 6));
         foodAPI.update();
-        date = Qt.formatDateTime(new Date(), "d.M");
     }
 
-    Connections {
-        target: foodAPI
-        onLoading: {
-            load = loading;
-        }
+    function getDayNameOfWeek(day) {
+        return Helper.weekday[day];
+    }
 
-        onDataReady: {
-            if (foods.length > 0) {
-                for(var i = 0; i < foods.length; ++i) {
-
-                    if (i === 0) {
-                        foodModel.append({"name": foodAPI.foods[i],
-                                          "size": 28,
-                                          "margin": 10,
-                                          "colorize": true,
-                                         });
-                    } else if (!foodAPI.foods[i-1].length > 0) {
-                        foodModel.append({"name": foodAPI.foods[i],
-                                          "size": 28,
-                                          "margin": 10,
-                                          "colorize": true,
-                                         });
-                    } else {
-                        foodModel.append({"name": foodAPI.foods[i],
-                                          "size": 26,
-                                          "margin": 20,
-                                          "colorize": false,
-                                         });
-                    }
-                }
-            } else {
-                foodModel.append({"name": "",
-                                  "size": 40,
-                                  "margin": 10,
-                                  "colorize": false,
-                                 });
-            }
-        }
+    Component.onCompleted: {
+        initialize(new Date());
     }
 }
 
