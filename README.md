@@ -12,5 +12,7 @@ Icon by [fercen](https://github.com/fercen).
 Screenshots
 ===========
 
-![menus](http://relativity.fi/JuveFood/20140127204827.jpg)
+![menus](http://relativity.fi/JuveFood/20140727201759.jpg)
+![swipe](http://relativity.fi/JuveFood/20140727201809.jpg)
+![open](http://relativity.fi/JuveFood/20140727201820.jpg)
 ![settings](http://relativity.fi/JuveFood/20140127204848.jpg)
