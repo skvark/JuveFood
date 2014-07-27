@@ -14,6 +14,9 @@ foodParser::foodParser(QObject *parent):
 
     QObject::connect(httpEngine_, SIGNAL(networkError(const QNetworkReply::NetworkError&)),
                      this, SLOT(error(const QNetworkReply::NetworkError&)));
+
+    QObject::connect(httpEngine_, SIGNAL(kitchenInfo(const QByteArray&, const QString)),
+                     this, SLOT(parseInfoData(const QByteArray&, const QString)));
 }
 
 foodParser::~foodParser()
@@ -52,6 +55,21 @@ void foodParser::parseKitchenFood(QString kitchenName, QString lang)
         QList<QPair<QString, QString> >  params = kitchen->getByWeekdayQuery(lang, date);
         httpEngine_->getOneDayFoods(params);
     }
+}
+
+void foodParser::getOpeningHours() {
+    foreach(auto kitchen, kitchens_) {
+        parseKitchenOpeningHours(kitchen->getKitchenName());
+    }
+}
+
+void foodParser::parseKitchenOpeningHours(QString kitchenName) {
+    Kitchen *kitchen = getKitchenByName(kitchenName);
+    if (kitchen == NULL) {
+        return;
+    }
+    QList<QPair<QString, QString> >  params = kitchen->getKitchenInfoQuery();
+    httpEngine_->getKitchenInfo(params, kitchen->getKitchenName());
 }
 
 QList<QString> foodParser::getKitchenNames()
@@ -120,7 +138,7 @@ QDate foodParser::parseDate(QJsonDocument document) {
 void foodParser::parseInitData(const QByteArray &data)
 {
     QByteArray data2 = data;
-    cleanJSON(data2);
+    cleanJSON(data2, false);
     QJsonParseError err;
 
     QJsonDocument doc = QJsonDocument::fromJson(data2, &err);
@@ -164,7 +182,7 @@ void foodParser::parseInitData(const QByteArray &data)
 void foodParser::parseFoodData(const QByteArray &data)
 {
     QByteArray data2 = data;
-    cleanJSON(data2);
+    cleanJSON(data2, false);
     QJsonParseError err;
     QList<QString> foods;
 
@@ -227,6 +245,32 @@ void foodParser::parseFoodData(const QByteArray &data)
         model->addRestaurant(restaurant);
     } else {
         res->setFoods(foods);
+    }
+}
+
+void foodParser::parseInfoData(const QByteArray &data, const QString kitchenName)
+{
+
+    QByteArray data2 = data;
+    cleanJSON(data2, true);
+    QJsonParseError err;
+
+    QJsonDocument doc = QJsonDocument::fromJson(data2, &err);
+
+    if(doc.isEmpty()) {
+        return;
+    }
+
+    QJsonObject info = doc.object();
+
+    QString infodata = info.value("d").toString();
+    QString cleaned_info = cleanOpeningHours(infodata);
+
+    Kitchen *kitchen = getKitchenByName(kitchenName);
+    if (kitchen == NULL) {
+        return;
+    } else {
+        kitchen->setOpeningHours(cleaned_info);
     }
 }
 

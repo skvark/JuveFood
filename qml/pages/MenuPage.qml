@@ -41,22 +41,18 @@ Page {
                     OneDayFood { id: foods5 }
                     OneDayFood { id: foods6 }
                     OneDayFood { id: foods7 }
-                }
+            }
 
     }
 
     // initial date
     property var first_date
 
-    function updateFoods() {
-        foodAPI.update();
-    }
-
     function addDays(theDate, days) {
         return new Date(theDate.getTime() + days*24*60*60*1000);
     }
 
-    // called upon startup: set initial starting point and populates all models
+    // called upon startup: sets initial starting point and populates all models
     function initialize(date) {
 
         first_date = date
@@ -90,7 +86,6 @@ Page {
     // (if day has chnaged) and update data
     function update() {
         if (first_date.getDay() !== (new Date()).getDay()) {
-            console.log("sadasdas");
             foodAPI.deleteModel(first_date);
             first_date = new Date();
             foodAPI.createNewModel(addDays(first_date, 6));
@@ -101,7 +96,7 @@ Page {
     }
 
     // updates slideshows views +1 day
-    // parameter is the new starting date
+    // date parameter is the new starting date
     function reInitialize(date) {
         foods1.initialize(date);
         foods2.initialize(addDays(date, 1));

@@ -51,7 +51,7 @@ Item {
 
         anchors.fill: parent
 
-        delegate: Item {
+        delegate: ListItem {
 
             width: parent.width
             height: background.height + Theme.paddingMedium
@@ -75,6 +75,13 @@ Item {
 
             }
 
+            MouseArea {
+                anchors.fill: background
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("OpeningHours.qml"), { name: name })
+                }
+            }
+
             Column {
                     id: column
                     anchors.left: parent.left;
@@ -92,7 +99,7 @@ Item {
                         anchors.leftMargin: 10
                         font.pixelSize: Theme.fontSizeLarge
                         truncationMode: TruncationMode.Fade
-                        }
+                    }
 
                     Label {
                         id: foodcontent
@@ -102,7 +109,7 @@ Item {
                         textFormat: Text.RichText
                         text: {
                             if(food == "") {
-                                return "No menu available today.";
+                                return "No menu available for this day.";
                             } else {
                                 return food;
                             }
@@ -110,6 +117,7 @@ Item {
                         wrapMode: Text.Wrap
                         font.pixelSize: Theme.fontSizeSmall
                     }
+
                 }
 
             }
@@ -119,7 +127,7 @@ Item {
 
         ViewPlaceholder {
             enabled: listview.count == 0
-            text: "No menus available for any of your selected restaurants today."
+            text: "No menus available for any of your selected restaurants for this day."
         }
 
         VerticalScrollDecorator { flickable: listview }

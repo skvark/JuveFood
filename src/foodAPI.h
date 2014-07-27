@@ -22,7 +22,6 @@ public:
     foodAPI(QObject *parent = 0);
     ~foodAPI();
 
-    Q_INVOKABLE QList<QString> getUserKitchens();
     Q_INVOKABLE QList<QString> getKitchenNameList();
     Q_INVOKABLE void saveSettings(QList<QString> settings);
     Q_INVOKABLE bool settingsLoadingStatus();
@@ -31,6 +30,7 @@ public:
     Q_INVOKABLE void createNewModel(QDate date);
     Q_INVOKABLE void init();
     Q_INVOKABLE void deleteModel(QDate date);
+    Q_INVOKABLE QString getOpeningHours(QString kitchenName);
 
     void getFoodBySettings();
     void orderFoodsByKitchenName();

@@ -32,6 +32,8 @@ public:
     void addNewModel(QDate date);
     void clearModels();
     void deleteModel(QDate date);
+    void parseKitchenOpeningHours(QString kitchenName);
+    void getOpeningHours();
 
 signals:
     void initData();
@@ -40,6 +42,7 @@ signals:
 public slots:
     void parseInitData(const QByteArray &data);
     void parseFoodData(const QByteArray &data);
+    void parseInfoData(const QByteArray &data, const QString kitchenName);
     void error(const QNetworkReply::NetworkError &error);
 
 private:

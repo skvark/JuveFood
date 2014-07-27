@@ -18,9 +18,10 @@ public:
 
     QString getKitchenName();
     QList<QPair<QString, QString> > getByWeekdayQuery(QString lang, QDate date);
-    QList<QString> getTodaysFoods();
+    QList<QPair<QString, QString> > getKitchenInfoQuery();
     QString getShortName();
-    void addTodaysFoods(QList<QString> food);
+    QString getOpeningHours();
+    void setOpeningHours(QString hours);
 
 private:
 
@@ -36,8 +37,8 @@ private:
     QString name_;
     // Shorter name
     QString shortName_;
-    // current foods, contains only main food names
-    QList<QString> todaysFood_;
+
+    QString openingHours_;
 
 };
 

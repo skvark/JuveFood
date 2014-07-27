@@ -27,6 +27,12 @@ void foodAPI::deleteModel(QDate date)
     parser_->deleteModel(date);
 }
 
+QString foodAPI::getOpeningHours(QString kitchenName)
+{
+    qDebug() << kitchenName;
+    return parser_->getKitchenByName(kitchenName)->getOpeningHours();
+}
+
 void foodAPI::update() {
     parser_->clearModels();
     getFoodBySettings();
@@ -57,6 +63,7 @@ void foodAPI::getFoodBySettings()
     foreach(QString name, settings) {
         parser_->parseKitchenFood(name, lang);
     }
+    parser_->getOpeningHours();
 }
 
 // This slots is called automatically after the kitchens are initialized
@@ -76,12 +83,6 @@ QVariant foodAPI::getModelByDate(QDate date) const
 bool foodAPI::settingsLoadingStatus()
 {
     return settingsLoading_;
-}
-
-QList<QString> foodAPI::getUserKitchens()
-{
-    QList<QString> user;
-    return user;
 }
 
 QList<QString> foodAPI::getKitchenNameList()

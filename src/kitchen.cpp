@@ -1,4 +1,5 @@
 #include "kitchen.h"
+#include <QDebug>
 
 Kitchen::Kitchen(unsigned int kitchenId,
                  unsigned int kitchenInfoId,
@@ -18,6 +19,25 @@ Kitchen::Kitchen(unsigned int kitchenId,
 QString Kitchen::getKitchenName()
 {
     return name_;
+}
+
+QString Kitchen::getShortName()
+{
+    return shortName_;
+}
+
+QString Kitchen::getOpeningHours()
+{
+    if(openingHours_.length() > 2) {
+        return openingHours_;
+    } else {
+        return QString("No data available.");
+    }
+}
+
+void Kitchen::setOpeningHours(QString hours)
+{
+    openingHours_ = hours;
 }
 
 QList<QPair<QString, QString> > Kitchen::getByWeekdayQuery(QString lang, QDate date)
@@ -48,17 +68,13 @@ QList<QPair<QString, QString> > Kitchen::getByWeekdayQuery(QString lang, QDate d
     return query;
 }
 
-QList<QString> Kitchen::getTodaysFoods()
+QList<QPair<QString, QString> > Kitchen::getKitchenInfoQuery()
 {
-    return todaysFood_;
-}
-
-QString Kitchen::getShortName()
-{
-    return shortName_;
-}
-
-void Kitchen::addTodaysFoods(QList<QString> food)
-{
-    todaysFood_ = food;
+   // format:
+   // GetKitchenInfo?KitchenInfoId=2360&format=json
+   QList<QPair<QString, QString> > query;
+   query.append(qMakePair(QString("KitchenInfoId"), QString::number(openInfoId_, 10)));
+   query.append(qMakePair(QString("format"), QString("json")));
+   query.append(qMakePair(QString("lang"), QString("'fi'")));
+   return query;
 }
