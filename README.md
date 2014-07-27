@@ -3,6 +3,8 @@ JuveFood
 
 Sailfish application. Fetches menus from any Juvenes restaurant.
 
+Note: C++11 standard is used in the code.
+
 You can get the latest version from Jolla store.
 
 Icon by [fercen](https://github.com/fercen).
