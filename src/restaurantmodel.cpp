@@ -6,7 +6,15 @@ RestaurantModel::RestaurantModel(QObject *parent)
      : QAbstractListModel(parent)
  {
 
- }
+}
+
+RestaurantModel::~RestaurantModel()
+{
+    foreach(Restaurant* restaurant, restaurants_) {
+        delete restaurant;
+        restaurant = 0;
+    }
+}
 
 QHash<int, QByteArray> RestaurantModel::roleNames() const
 {

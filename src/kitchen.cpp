@@ -53,7 +53,6 @@ QList<QPair<QString, QString> > Kitchen::getByWeekdayQuery(QString lang, QDate d
         language = "'en'";
     }
 
-
     // Add query components to a list
     query.append(qMakePair(QString("KitchenId"), QString::number(kitchenId_, 10)));
     query.append(qMakePair(QString("MenuTypeId"), QString::number(menuTypeId_, 10)));

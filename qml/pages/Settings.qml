@@ -19,17 +19,20 @@ Dialog {
 
     SilicaFlickable {
         anchors.fill: parent
+        width: parent.width
         contentHeight: childrenRect.height
+
+        DialogHeader {
+            id: header
+            acceptText: "Save"
+        }
 
         Column {
             id: content
             spacing: Theme.paddingSmall
             width: parent.width
+            anchors.top: header.bottom
             height: 200
-
-            DialogHeader {
-                acceptText: "Save"
-            }
 
             ComboBox {
                 id: combo
@@ -59,21 +62,24 @@ Dialog {
             parent: page
             id: listView
             y: 390
-            width: page.width; height: 500
+            width: parent.width;
+            height: 500
             model: restaurantModel
-            anchors.leftMargin: Theme.paddingMedium
 
             delegate: BackgroundItem {
                 id: delegate
                 down: check
+                width: parent.width
+                anchors.left: parent.left;
 
                 Label {
                     id: kitchenlabel
-                    anchors.verticalCenter: parent.verticalCenter
-                    y: Theme.paddingSmall
                     font.pixelSize: 26
                     wrapMode: Text.WordWrap
                     text: name
+                    width: parent.width
+                    height: parent.height
+                    anchors.left: parent.left;
                     anchors.leftMargin: Theme.paddingMedium
                     verticalAlignment: Text.AlignVCenter
                     color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
@@ -91,7 +97,10 @@ Dialog {
                 }
 
             }
-            VerticalScrollDecorator { flickable: listView }
+            VerticalScrollDecorator {
+                flickable: listView
+
+            }
         }
     }
 

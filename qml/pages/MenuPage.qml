@@ -55,7 +55,8 @@ Page {
     // called upon startup: sets initial starting point and populates all models
     function initialize(date) {
 
-        first_date = date
+        first_date = date;
+        foodAPI.setDate(first_date);
 
         foodAPI.createNewModel(date);
         foods1.initialize(date);

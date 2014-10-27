@@ -16,7 +16,7 @@
 class foodAPI : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool settingsLoading READ settingsLoadingStatus NOTIFY settingsLoading)
+    Q_PROPERTY(RestaurantModel* getModelByDate READ getModelByDate CONSTANT)
 
 public:
     foodAPI(QObject *parent = 0);
@@ -26,7 +26,10 @@ public:
     Q_INVOKABLE void saveSettings(QList<QString> settings);
     Q_INVOKABLE bool settingsLoadingStatus();
     Q_INVOKABLE QList<QString> loadSettings();
-    Q_INVOKABLE QVariant getModelByDate(QDate date) const;
+
+    Q_INVOKABLE void setDate(QDate date);
+    RestaurantModel *getModelByDate() const;
+
     Q_INVOKABLE void createNewModel(QDate date);
     Q_INVOKABLE void init();
     Q_INVOKABLE void deleteModel(QDate date);
@@ -51,6 +54,7 @@ private:
     SettingsManager* settingsManager_;
     bool settingsLoading_;
     RestaurantModel* model_;
+    QDate date_;
 
 };
 

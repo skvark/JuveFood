@@ -19,6 +19,8 @@ class RestaurantModel : public QAbstractListModel
      };
 
      RestaurantModel(QObject *parent = 0);
+     ~RestaurantModel();
+
      void addRestaurant(Restaurant* restaurant);
      int rowCount(const QModelIndex & parent = QModelIndex()) const;
      QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;

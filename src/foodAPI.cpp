@@ -78,9 +78,9 @@ void foodAPI::kitchensReady()
     getFoodBySettings();
 }
 
-QVariant foodAPI::getModelByDate(QDate date) const
+RestaurantModel* foodAPI::getModelByDate() const
 { 
-    return QVariant::fromValue((QObject*) parser_->getModelByDate(date));
+    return parser_->getModelByDate(date_);
 }
 
 bool foodAPI::settingsLoadingStatus()
@@ -103,4 +103,9 @@ void foodAPI::saveSettings(QList<QString> settings)
 QList<QString> foodAPI::loadSettings()
 {
     return settingsManager_->loadSettings();
+}
+
+void foodAPI::setDate(QDate date)
+{
+    date_ = date;
 }
