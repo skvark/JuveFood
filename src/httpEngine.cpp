@@ -11,6 +11,14 @@ HTTPEngine::HTTPEngine(QObject *parent) :
 
 }
 
+HTTPEngine::~HTTPEngine()
+{
+    foreach(QNetworkReply* reply, hash_.keys()) {
+        delete reply;
+        reply = 0;
+    }
+}
+
 void HTTPEngine::getOneDayFoods(QList<QPair<QString, QString> > &queryItems)
 {
     QUrlQuery url;

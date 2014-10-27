@@ -32,7 +32,7 @@ void cleanJSON(QByteArray &dirty, bool isInfo) {
     } else {
         // remove "); from the end
         dirty.remove(dirty.length() - 2, 2);
-        // remove ({"d":" from the beginning
+        // remove ( from the beginning
         dirty.remove(0, 1);
     }
 }
@@ -42,6 +42,7 @@ QString cleanOpeningHours(QString dirty) {
     utf8string.replace("\\\"", "\"");
     utf8string.replace("\\/", "/");
     utf8string.replace("\\u000a", "");
+    utf8string.replace("\\u0009", "");
     utf8string.replace("\"<", "<");
     utf8string.replace(">\"", ">");
     return QString::fromUtf8(utf8string);

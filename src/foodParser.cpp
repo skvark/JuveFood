@@ -27,6 +27,10 @@ foodParser::~foodParser()
         delete kitchen;
         kitchen = 0;
     }
+    foreach(RestaurantModel* model, models_) {
+        delete model;
+        model = 0;
+    }
 }
 
 void foodParser::parseKitchens()

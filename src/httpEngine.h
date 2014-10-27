@@ -14,6 +14,7 @@ class HTTPEngine : public QObject
     Q_OBJECT
 public:
     HTTPEngine(QObject *parent = 0);
+    ~HTTPEngine();
 
     enum GetMethod
     {
