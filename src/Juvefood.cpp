@@ -8,6 +8,7 @@
 #include <QQuickView>
 #include <QGuiApplication>
 #include <QCoreApplication>
+#include <QtQml>
 #include <restaurant.h>
 #include <QMetaType>
 #include <restaurantmodel.h>
@@ -16,7 +17,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication::setApplicationName("harbour-juvefood");
     QCoreApplication::setOrganizationName("harbour-juvefood");
-    qmlRegisterType<RestaurantModel>("juvefood.restaurants", 1, 0, "RestaurantModel");
+    qmlRegisterType<RestaurantModel>("harbour.juvefood.restaurantmodel", 1, 0, "RestaurantModel");
     foodAPI api;
     QGuiApplication *app = SailfishApp::application(argc, argv);
     QQuickView *view = SailfishApp::createView();
