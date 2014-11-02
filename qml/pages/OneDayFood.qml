@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import juvefood.restaurants 1.0
+import harbour.juvefood.restaurantmodel 1.0
 
 Item {
 
@@ -14,6 +14,7 @@ Item {
         headerdate = date.getDate().toString()
         month = (date.getMonth() + 1).toString()
         dayofweek = getDayNameOfWeek(date.getDay());
+        foodAPI.setDate(date);
         listview.model = foodAPI.getModelByDate;
     }
 

@@ -1,6 +1,6 @@
 Name: harbour-juvefood
 Summary: Juvenes food application.
-Version: 1.1
+Version: 1.3
 QMakeOptions:
 - VERSION='%{version}-%{release}'
 Release: 0
